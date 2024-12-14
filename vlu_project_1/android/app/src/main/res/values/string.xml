@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Health VLU App</string> <!-- Đã sửa chữ S thành chữ thường -->
+    <string name="facebook_app_id">527601056572075</string>
+    <string name="fb_login_protocol_scheme">fb527601056572075</string>
+    <string name="facebook_client_token">6e2f9abd5043ff99f8657f777a95df8f</string>
+</resources>

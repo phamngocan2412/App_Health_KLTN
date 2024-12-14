@@ -1,0 +1,116 @@
+{
+  "thuoc": [
+    {
+      "ten_thuoc"     : "Thuốc trung hòa acid dạ dày"              ,
+      "benh"          : "Trào ngược dạ dày thực quản, khó tiêu"    ,
+      "lieu_luong"    : "Theo chỉ dẫn bác sĩ"                      ,
+      "thoi_gian_uong": "Ngay sau bữa ăn hoặc khi có cơn đau"      ,
+      "cong_dung"     : "Giải quyết triệu chứng ợ nóng, đau dạ dày"
+    },
+    {
+      "ten_thuoc"     : "Thuốc ức chế bơm proton (PPIs)"                    ,
+      "benh"          : "Đau dạ dày, trào ngược dạ dày thực quản"           ,
+      "lieu_luong"    : "Uống nguyên viên, trước bữa ăn 30 phút",
+      "thoi_gian_uong": "Trước bữa ăn"                                      ,
+      "cong_dung"     : "Giảm sản xuất dịch vị dạ dày"
+    },
+    {
+      "ten_thuoc"     : "Thuốc kháng thụ thể H2"               ,
+      "benh"          : "Đau dạ dày, viêm loét dạ dày tá tràng",
+      "lieu_luong"    : "Theo chỉ dẫn bác sĩ"                  ,
+      "thoi_gian_uong": "Nhiều lần trong ngày"                 ,
+      "cong_dung"     : "Ngăn cản sự tiết acid dịch vị"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Sucralfate"                   ,
+      "benh"          : "Loét dạ dày, viêm dạ dày"           ,
+      "lieu_luong"    : "Theo chỉ dẫn bác sĩ"                ,
+      "thoi_gian_uong": "Lúc bụng đói"                       ,
+      "cong_dung"     : "Tạo hàng rào bảo vệ niêm mạc dạ dày"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Bismuth"                ,
+      "benh"          : "Đau dạ dày"                   ,
+      "lieu_luong"    : "Theo chỉ dẫn bác sĩ"          ,
+      "thoi_gian_uong": "Trước bữa ăn 15-30 phút"      ,
+      "cong_dung"     : "Giảm đau, tiêu diệt H. pylori"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Paracetamol"                     ,
+      "benh"          : "Đau đầu nhẹ"                           ,
+      "lieu_luong"    : "500 mg - 1000 mg"                      ,
+      "thoi_gian_uong": "Mỗi 4-6 giờ, không vượt quá 10 - 15 mg/kg"   ,
+      "cong_dung"     : "Giảm đau cho triệu chứng nhẹ, giảm sốt"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Ibuprofen"                         ,
+      "benh"          : "Đau đầu, đau cơ"                         ,
+      "lieu_luong"    : "200 mg - 400 mg"                         ,
+      "thoi_gian_uong": "Mỗi 4-6 giờ, không vượt quá 1200 mg/ngày",
+      "cong_dung"     : "Giảm đau, chống viêm"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Rizatriptan" ,
+      "benh"          : "Đau nửa đầu"       ,
+      "lieu_luong"    : "5 mg - 10 mg"      ,
+      "thoi_gian_uong": "Có thể dùng liều thứ hai sau 2 giờ, không vượt quá 30 mg/ngày",
+      "cong_dung"     : "Giảm đau cho chứng đau nửa đầu"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Amitriptyline"            ,
+      "benh"          : "Đau đầu do căng thẳng"          ,
+      "lieu_luong"    : "10 mg - 50 mg"                  ,
+      "thoi_gian_uong": "Dùng hàng ngày"                 ,
+      "cong_dung"     : "Ngăn ngừa đau đầu do căng thẳng"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Erenumab (Aimovig)"   ,
+      "benh"          : "Đau nửa đầu"                ,
+      "lieu_luong"    : "70 mg - 140 mg"             ,
+      "thoi_gian_uong": "Tiêm mỗi tháng"             ,
+      "cong_dung"     : "Ngăn ngừa đau nửa đầu"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Codeine"                          ,
+      "benh"          : "Đau nửa đầu"                            ,
+      "lieu_luong"    : "15 mg - 60 mg"                          ,
+      "thoi_gian_uong": "Mỗi 4-6 giờ, không vượt quá 240 mg/ngày",
+      "cong_dung"     : "Giảm đau nửa đầu"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Paracetamol"           ,
+      "benh"          : "Sốt nhẹ"                     ,
+      "lieu_luong"    : "1 viên paracetamol 500mg/lần",
+      "thoi_gian_uong": "4-6 giờ/lần"                 ,
+      "cong_dung"     : "Giảm đau, hạ sốt"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Ibuprofen"             ,
+      "benh"          : "Sốt trung bình"              ,
+      "lieu_luong"    : "1-2 viên Ibuprofen 200mg/lần",
+      "thoi_gian_uong": "3 lần/ngày, cách 4-6 giờ"    ,
+      "cong_dung"     : "Giảm đau, hạ sốt"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Naproxen"                             ,
+      "benh"          : "Sốt cao"                                    ,
+      "lieu_luong"    : "1 viên Naproxen 200mg/lần"                  ,
+      "thoi_gian_uong": "8-12 giờ/lần, không quá 2 viên trong 12 giờ",
+      "cong_dung"     : "Giảm đau, hạ sốt"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Ketorolac"                   ,
+      "benh"          : "Sốt cao"                           ,
+      "lieu_luong"    : "30-60 mg Ketorolac/ngày (tiêm bắp)",
+      "thoi_gian_uong": "Không sử dụng quá 5 ngày"          ,
+      "cong_dung"     : "Giảm đau"
+    },
+    {
+      "ten_thuoc"     : "Thuốc Aspirin"               ,
+      "benh"          : "Sốt cao"                     ,
+      "lieu_luong"    : "325-650mg Aspirin/lần"       ,
+      "thoi_gian_uong": "4 giờ/lần, không quá 4g/ngày",
+      "cong_dung"     : "Giảm đau, hạ sốt"
+    }
+  ]
+}

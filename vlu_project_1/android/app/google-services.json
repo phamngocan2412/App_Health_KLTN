@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "497672733709",
+    "project_id": "project-vlu-f890e",
+    "storage_bucket": "project-vlu-f890e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497672733709:android:44cba099a5fa6fcd940144",
+        "android_client_info": {
+          "package_name": "com.health.vlu"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUiRIUPZFneWtx0xwjLTCXUGcniXMWyn4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

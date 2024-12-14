@@ -1,0 +1,22 @@
+flutter_icons:
+  android: true
+  image_path: "assets/images/logo_bg.png"
+  min_sdk_android: 23
+
+  ios: true
+  remove_alpha_ios: true
+  
+  web:
+    generate: true
+    image_path: "assets/images/logo_bg.png"  # Cập nhật đường dẫn nếu cần
+    background_color: "#ffffff"  # Thay thế bằng màu nền bạn muốn
+    theme_color: "#"  # Thay thế bằng màu chủ đề bạn muốn
+
+  windows:
+    generate: true
+    image_path: "assets/images/logo_bg.png"
+    icon_size: 48 # min:48, max:256, default: 48
+
+  macos:
+    generate: true
+    image_path: "assets/images/logo_bg.png"

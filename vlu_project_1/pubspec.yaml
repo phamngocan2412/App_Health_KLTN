@@ -1,0 +1,92 @@
+name: vlu_project_1
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  # Flutter SDK
+  flutter:
+    sdk: flutter
+
+  # UI Packages
+  flutter_svg: ^2.0.10+1 
+  flutter_screenutil: ^5.9.3  # Tạo giao diện responsive
+  smooth_page_indicator: ^1.2.0+3  # Chỉ báo trang mượt mà
+  iconsax: ^0.0.8  # Bộ biểu tượng đa dạng
+  shimmer: ^3.0.0  # Hiệu ứng shimmer cho UI
+  google_fonts: ^6.2.1
+
+  # Firebase Packages
+  firebase_core: ^3.5.0
+  firebase_auth: ^5.3.1
+  cloud_firestore: ^5.4.3 
+  firebase_storage: ^12.3.3 
+  flutter_facebook_auth: ^7.1.1
+  google_sign_in: ^6.2.1  
+
+  # State Management
+  get_storage: ^2.1.1  # Lưu trữ dữ liệu cục bộ
+  get: ^4.6.1  # Quản lý trạng thái và điều hướng
+
+  # Connectivity and Media
+  connectivity_plus: ^6.0.5
+  image_picker: ^1.1.2 
+  cached_network_image: ^3.4.1
+
+  # Utilities
+  logger: ^2.4.0
+  permission_handler: ^11.3.1 
+  intl: ^0.19.0
+  date_picker_timeline: ^1.2.6
+  flutter_local_notifications: ^17.2.3
+  shared_preferences: ^2.3.3 
+  flutter_timezone: ^3.0.1
+  # Database
+  sqflite: ^2.4.0
+
+  # Animation
+  flutter_staggered_animations: ^1.1.1  # Hiệu ứng animation cho danh sách
+  animations: ^2.0.11 
+
+  # App Development
+  flutter_launcher_icons: ^0.14.1  # Tạo biểu tượng ứng dụng
+  rename_app: ^1.6.1
+  change_app_package_name: ^1.4.0
+  flutter_native_splash: ^2.4.2
+  easy_localization: ^3.0.7
+  pie_chart: ^5.4.0
+  google_mlkit_text_recognition: ^0.14.0
+  flutter_bloc: ^8.1.6
+  provider: ^6.1.2
+  flutter_gemini: ^2.0.3
+  google_generative_ai: ^0.4.6
+  table_calendar: ^3.1.2
+  flutter_riverpod: ^2.6.1
+  flutter_dotenv: ^5.2.1
+  flutter_image_compress: ^2.3.0
+  crystal_navigation_bar: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/medicien/
+    - assets/sounds/
+    - .env
+    
+flutter_native_splash:
+  image: assets/images/splash.png
+  color: "#ffffff"
+  android: true
