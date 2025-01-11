@@ -25,6 +25,7 @@ class _SignFormState extends State<SignForm> {
     final controller = Get.put(LoginController());
     return Form(
       key: controller.signInFormKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction, 
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: TSize.spaceBtwSections),
         child: Column(
@@ -41,13 +42,32 @@ class _SignFormState extends State<SignForm> {
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 16.0, horizontal: 20.0),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(color: Colors.black54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(color: Colors.black54),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(color: Colors.red),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(color: Colors.red),
                 ),
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 70,
                   minHeight: 60,
                 ),
               ),
+              onChanged: (_) {
+                setState(() {}); 
+              },
             ),
             const SizedBox(height: TSize.spaceBtwInputField),
 
@@ -73,12 +93,31 @@ class _SignFormState extends State<SignForm> {
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 16.0, horizontal: 20.0),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.black54),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.black54),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.red),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.red), 
                     ),
                     prefixIconConstraints: const BoxConstraints(
                       minWidth: 70,
                       minHeight: 60,
                     )),
+                onChanged: (_) {
+                  setState(() {}); 
+                },
               ),
             ),
             const SizedBox(height: TSize.spaceBtwInputField / 2),
@@ -95,9 +134,7 @@ class _SignFormState extends State<SignForm> {
                         !controller.rememberMe.value,
                   ),
                 ),
-
                 const Text(TText.rememberMe),
-
                 const Spacer(),
 
                 // Forgot password

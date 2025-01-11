@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, curly_braces_in_flow_control_structures, depend_on_referenced_packages
+// ignore_for_file: avoid_print, curly_braces_in_flow_control_structures, depend_on_referenced_packages, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +16,8 @@ import 'package:vlu_project_1/shared/widgets/text_string.dart';
 
 
 class AddTaskPage extends StatefulWidget {
-  const AddTaskPage({super.key});
+  final Task? task;
+  const AddTaskPage({super.key, this.task});
 
   @override
   State<AddTaskPage> createState() => _AddTaskPageState();
@@ -29,7 +30,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   final TextEditingController noteController = TextEditingController();
 
   final ValueNotifier<DateTime> selectedDate = ValueNotifier(DateTime.now());
-  late String startTime = DateFormat('hh:mm a').format(DateTime.now()).toString();
+  late String startTime = DateFormat('HH:mm').format(DateTime.now()).toString();
   String selectedRepeat = "Không";
   List<String> repeatList = ["Không", "Hằng ngày", "Hằng tuần", "Hằng tháng"];
   int selectedColor = 0;
@@ -44,10 +45,17 @@ class _AddTaskPageState extends State<AddTaskPage> {
   @override
   void initState() {
     super.initState();
-    // Đảm bảo quyền chỉ được yêu cầu ở đây
     Future.delayed(Duration.zero, () {
       _checkNotiPermissions();
     });
+      if (widget.task != null) {
+      titleController.text = widget.task!.title ?? '';
+      noteController.text = widget.task!.note ?? '';
+      selectedDate.value = DateFormat('dd/MM/yyyy').parse(widget.task!.date ?? DateTime.now().toString());
+      startTime = widget.task!.startTime ?? DateFormat('hh:mm a').format(DateTime.now()).toString();
+      selectedColor = widget.task!.color ?? 0;
+      selectedRepeat = widget.task!.repeat ?? 'Không';
+    }
   }
 
   Future<void> _checkNotiPermissions() async {
@@ -55,7 +63,6 @@ class _AddTaskPageState extends State<AddTaskPage> {
       if (mounted) {
         await PermissionManager.checkAndRequestNotificationPermission(context);
       }
-      // Kiểm tra lại sau khi yêu cầu cấp quyền
       if (!await Permission.notification.isGranted) {
         print("Người dùng từ chối quyền thông báo.");
       }
@@ -142,7 +149,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                     },
                   ),
                   ButtonAdd(
-                    label: TText.creatTask,
+                    label: widget.task == null ? TText.creatTask : TText.editTask, 
                     onTap: () async {
                       await _validateDate();
                     },
@@ -181,9 +188,15 @@ class _AddTaskPageState extends State<AddTaskPage> {
 
   Future<void> _validateDate() async {
     if (titleController.text.isNotEmpty && noteController.text.isNotEmpty) {
-      await _addTaskToDb();
-      Get.back();
-      Loaders.successSnackBar(title: "Thêm nhắc nhở", message: "Bạn đã thêm một nhắc nhở: ${titleController.text}");
+      if (widget.task == null) {
+        await _addTaskToDb();
+        Get.back();
+        Loaders.successSnackBar(title: "Thêm nhắc nhở", message: "Bạn đã thêm nhắc nhở: ${titleController.text}");
+      } else {
+        await _editTaskInDb();
+        Get.back();
+        Loaders.successSnackBar(title: "Chỉnh sửa nhắc nhở", message: "Bạn đã chỉnh sửa nhắc nhở: ${titleController.text}");
+      }
     } else {
       Loaders.warningSnackBar(
         title: "Yêu cầu",
@@ -192,13 +205,28 @@ class _AddTaskPageState extends State<AddTaskPage> {
     }
   }
 
+  Future<void> _editTaskInDb() async {
+    Task editedTask = Task(
+      id: widget.task!.id,
+      title: titleController.text,
+      note: noteController.text,
+      date: DateFormat('dd/MM/yyyy').format(selectedDate.value),
+      startTime: startTime,
+      color: selectedColor,
+      repeat: selectedRepeat,
+    );
+
+    await taskController.updateTask(editedTask);
+    Get.back();
+    Loaders.successSnackBar(title: "Chỉnh sửa nhắc nhở", message: "Bạn đã chỉnh sửa nhắc nhở: ${editedTask.title}");
+  }
+
   Future<void> _addTaskToDb() async {
     taskController.addTask(
       task: Task(
         id: null,
         title: titleController.text,
         note: noteController.text,
-        isCompleted: 0,
         date: DateFormat('dd/MM/yyyy').format(selectedDate.value),
         startTime: startTime,
         color: selectedColor,

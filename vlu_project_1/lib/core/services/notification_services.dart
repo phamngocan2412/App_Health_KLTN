@@ -6,6 +6,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:vlu_project_1/core/services/notification_page.dart';
@@ -24,39 +25,48 @@ class NotifyHelper {
       BehaviorSubject<String>();
 
   initializeNotification() async {
-  final PermissionStatus permissionStatus = await Permission.notification.status;
+    // Kiểm tra trạng thái quyền thông báo
+    final PermissionStatus permissionStatus = await Permission.notification.status;
+
     if (permissionStatus.isGranted) {
-      print("Thay local");
-      await Permission.notification.request();
-      tz.initializeTimeZones();
-      const String timeZoneName =
-        'Asia/Ho_Chi_Minh';
-      tz.setLocalLocation(tz.getLocation(timeZoneName));
-      await _createNotificationChannel();
-      await _configureLocalTimeZone();
+      // Đã được cấp quyền
+      print("Quyền thông báo đã được cấp.");
+    } else if (permissionStatus.isDenied || permissionStatus.isPermanentlyDenied) {
+      // Yêu cầu cấp quyền nếu chưa được cấp
+      final PermissionStatus newStatus = await Permission.notification.request();
 
-      const DarwinInitializationSettings initializationSettingsIOS =
-          DarwinInitializationSettings(
-        requestSoundPermission: false,
-        requestBadgePermission: false,
-        requestAlertPermission: false,
-      );
-
-      const AndroidInitializationSettings initializationSettingsAndroid =
-          AndroidInitializationSettings("logo");
-
-      const InitializationSettings initializationSettings = InitializationSettings(
-        android: initializationSettingsAndroid,
-        iOS: initializationSettingsIOS,
-      );
-
-      await flutterNotificationService.initialize(
-        initializationSettings,
-        onDidReceiveNotificationResponse:  onDidReceiveNotificationResponse,
-      );
-    } else {
-      print('Quyền thông báo chưa được cấp.');
+      if (!newStatus.isGranted) {
+        print('Quyền thông báo chưa được cấp.');
+        return;
+      }
     }
+
+    // Tiếp tục cấu hình thông báo
+    tz.initializeTimeZones();
+    const String timeZoneName = 'Asia/Ho_Chi_Minh';
+    tz.setLocalLocation(tz.getLocation(timeZoneName));
+    await _createNotificationChannel();
+    await _configureLocalTimeZone();
+
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
+      requestSoundPermission: false,
+      requestBadgePermission: false,
+      requestAlertPermission: false,
+    );
+
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings("logo");
+
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await flutterNotificationService.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: onDidReceiveNotificationResponse,
+    );
   }
 
   
@@ -70,7 +80,93 @@ class NotifyHelper {
       debugPrint('notification payload: $payload');
       selectedNotificationSubject.add(payload!);
 
+      // Đặt lại cờ để xử lý thông báo mới
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isNotificationProcessed', false);
+
+      // Xử lý dữ liệu ngay khi thông báo đến
+      _processPayload(payload);
+
       Get.to(NotificationPage(payload: payload));
+    }
+   static void onDidReceiveBackgroundNotificationResponse(
+    NotificationResponse notificationResponse) async {
+      final String? payload = notificationResponse.payload;
+      if (notificationResponse.payload == null) {
+        debugPrint('background notification payload: $payload');
+        return;
+      }
+      debugPrint('background notification payload: $payload');
+
+      // Đặt lại cờ để xử lý thông báo mới
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('isNotificationProcessed', false);
+      selectedNotificationSubject.add(payload!);
+      _processPayload(payload);
+    }
+
+    static void _processPayload(String payload) async {
+      print("Processing payload: $payload");
+
+      try {
+        List<String> parts = payload.split('|');
+        if (parts.length == 4) {
+          final prefs = await SharedPreferences.getInstance();
+          bool isProcessed = prefs.getBool('isNotificationProcessed') ?? false;
+
+          if (!isProcessed) {
+            String title = parts[0];
+            String note = parts[1];
+            String date = parts[2];
+            String startTime = parts[3];
+
+            prefs.setString('lastNotificationTitle', title);
+            prefs.setString('lastNotificationNote', note);
+            prefs.setString('lastNotificationDate', date);
+            prefs.setString('lastNotificationTime', startTime);
+
+            // Tăng giá trị "chưa uống thuốc"
+            _updateStatistics(false);
+
+            prefs.setBool('isNotificationProcessed', true);
+
+            print("Title: $title");
+            print("Note: $note");
+            print("Date: $date");
+            print("Time: $startTime");
+          } else {
+            print("Thông báo đã được xử lý trước đó.");
+          }
+        } else {
+          print("Payload không đúng định dạng: $payload");
+        }
+      } catch (e) {
+        print("Lỗi khi xử lý payload: $e");
+      }
+    }
+    static void _updateStatistics(bool status, {bool isDecrement = false}) async {
+      final prefs = await SharedPreferences.getInstance();
+      List<String>? stats = prefs.getStringList('medicineStats');
+      stats ??= ['0', '0']; // [đã uống, chưa uống]
+
+      if (status) {
+        stats[0] = (int.parse(stats[0]) + 1).toString();
+      } else {
+        if (isDecrement) {
+          // Giảm số lượng "chưa uống thuốc"
+          stats[1] = (int.parse(stats[1]) - 1).toString();
+        } else {
+          // Tăng số lượng "chưa uống thuốc"
+          stats[1] = (int.parse(stats[1]) + 1).toString();
+        }
+      }
+
+      // Đảm bảo giá trị "chưa uống thuốc" không bị âm
+      if (int.parse(stats[1]) < 0) {
+        stats[1] = '0';
+      }
+
+      prefs.setStringList('medicineStats', stats);
     }
 
   static Future<NotificationDetails> _notificationDetails() async {

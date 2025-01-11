@@ -1,17 +1,16 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vlu_project_1/shared/widgets/animation_loader.dart';
-
-
+import 'package:lottie/lottie.dart'; 
 
 class FullScreenLoader {
   static void openLoadingDialog(String text, {String? animation}) {
     showDialog(
       context: Get.overlayContext!,
       barrierDismissible: false,
-      // ignore: deprecated_member_use
       builder: (_) => WillPopScope(
-        onWillPop: () async => false, // Prevent dialog from being dismissed
+        onWillPop: () async => false, 
         child: Container(
           color: Colors.white,
           width: double.infinity,
@@ -19,12 +18,16 @@ class FullScreenLoader {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(height: 200),
-              AnimationLoaderWidget(
-                text: text,
-                animation: animation ??
-                    'assets/images/animation_loader.gif', // Use default if not provided
+              const SizedBox(height: 100),
+              Center(
+                child: Lottie.asset(
+                  filterQuality: FilterQuality.high,
+                  'assets/images/animation_loading.json',
+                  width: 200,
+                  height: 200,
+                ),
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

@@ -131,6 +131,7 @@ class Validate {
     }
     return null;
   }
+  
 
   static String? lastName(String? lastName, {bool enableNullOrEmpty = false}) {
     if (enableNullOrEmpty && Validate().isNullOrEmpty(lastName)) {
@@ -148,6 +149,77 @@ class Validate {
     }
     if (Validate().isNullOrEmpty(userName)) {
       return 'Tên người dùng chưa được nhập'.tr();
+    }
+    return null;
+  }
+
+  static String? tenThuoc(String? tenThuoc,
+      {bool enableNullOrEmpty = false}) {
+    if (enableNullOrEmpty && Validate().isNullOrEmpty(tenThuoc)) {
+      return null;
+    }
+    if (Validate().isNullOrEmpty(tenThuoc)) {
+      return 'Tên thuốc chưa được nhập'.tr();
+    }
+    return null;
+  }
+
+  static String? benh(String? benh, {bool enableNullOrEmpty = false}) {
+    if (enableNullOrEmpty && Validate().isNullOrEmpty(benh)) {
+      return null;
+    }
+    if (Validate().isNullOrEmpty(benh)) {
+      return 'Bệnh chưa được nhập'.tr();
+    }
+    return null;
+  }
+
+  static String? lieuLuong(String? lieuLuong, {bool enableNullOrEmpty = false}) {
+    if (enableNullOrEmpty && Validate().isNullOrEmpty(lieuLuong)) {
+      return null;
+    }
+    if (Validate().isNullOrEmpty(lieuLuong)) {
+      return 'Liều lượng chưa được nhập'.tr();
+    }
+    return null;
+  }
+
+  static String? thoiGianUong(String? thoiGianUong, {bool enableNullOrEmpty = false}) {
+    if (enableNullOrEmpty && Validate().isNullOrEmpty(thoiGianUong)) {
+      return null;
+    }
+    if (Validate().isNullOrEmpty(thoiGianUong)) {
+      return 'Thời gian uống chưa được nhập'.tr();
+    }
+    return null;
+  }
+
+  static String? congDung(String? congDung, {bool enableNullOrEmpty = false}) {
+    if (enableNullOrEmpty && Validate().isNullOrEmpty(congDung)) {
+      return null;
+    }
+    if (Validate().isNullOrEmpty(congDung)) {
+      return 'Công dụng chưa được nhập'.tr();
+    }
+    return null;
+  }
+
+  static String? bacSi(String? bacSi, {bool enableNullOrEmpty = false}) {
+    if (enableNullOrEmpty && Validate().isNullOrEmpty(bacSi)) {
+      return null;
+    }
+    if (Validate().isNullOrEmpty(bacSi)) {
+      return 'Bác sĩ chưa được nhập'.tr();
+    }
+    return null;
+  }
+
+  static String? diaDiem(String? diaDiem, {bool enableNullOrEmpty = false}) {
+    if (enableNullOrEmpty && Validate().isNullOrEmpty(diaDiem)) {
+      return null;
+    }
+    if (Validate().isNullOrEmpty(diaDiem)) {
+      return 'Địa điểm chưa được nhập'.tr();
     }
     return null;
   }

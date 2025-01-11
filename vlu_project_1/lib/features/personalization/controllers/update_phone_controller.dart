@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:vlu_project_1/core/utils/network.dart';
 import 'package:vlu_project_1/data/repositories/user/user_repository.dart';
 import 'package:vlu_project_1/features/auth/controller/user_controller.dart';
-import 'package:vlu_project_1/features/personalization/screens/profile/profile_screen.dart';
 import 'package:vlu_project_1/shared/widgets/full_screen_loader.dart';
 import 'package:vlu_project_1/shared/widgets/loaders.dart';
 
@@ -39,7 +38,6 @@ class UpdatePhoneNumberController extends GetxController {
         return;
       }
 
-      // Form Validation
       if (!updatePhoneNumberFormKey.currentState!.validate()) {
         FullScreenLoader.stopLoading();
         return;
@@ -51,14 +49,14 @@ class UpdatePhoneNumberController extends GetxController {
       };
       await userRepository.updateSingleField(data);
 
-      // Update the Rx User value
       userController.user.value.phoneNumber = phoneNumber.text.trim();
-
+      userController.user.refresh();
+      
+      Get.back();
       FullScreenLoader.stopLoading();
       Loaders.successSnackBar(
           title: 'Thành công', message: 'Cập nhật số điện thoại thành công');
 
-      Get.off(() => const ProfileScreen());
     } catch (e) {
       FullScreenLoader.stopLoading();
       Loaders.errorSnackBar(title: 'Lỗi', message: e.toString());

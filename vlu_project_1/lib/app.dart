@@ -1,12 +1,15 @@
 // ignore_for_file: avoid_print, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:vlu_project_1/core/bindings/general_bindings.dart';
 import 'package:vlu_project_1/core/utils/assets/theme.dart';
+import 'package:vlu_project_1/localization.dart';
 import 'package:vlu_project_1/route.dart';
 import 'package:vlu_project_1/shared/size_config.dart';
+
 
 
 class App extends StatelessWidget {
@@ -21,6 +24,14 @@ class App extends StatelessWidget {
       builder: (context, child) {
         SizeConfig().init(context);
         return GetMaterialApp(
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: AppLocalizations.supportedLocales, 
+          locale: const Locale('vi'),
           debugShowCheckedModeBanner: false,
           title: 'Medicine And Notification',
           theme: theme(),

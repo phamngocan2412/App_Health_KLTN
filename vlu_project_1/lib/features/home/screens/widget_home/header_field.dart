@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:vlu_project_1/core/utils/assets/theme.dart';
-
 import 'package:vlu_project_1/features/home/screens/widget_home/button_add.dart';
+import '../../../../localization.dart';
 
 class HeaderField extends StatelessWidget {
-  final VoidCallback onTap; // Hàm được truyền vào
+  final VoidCallback onTap;
 
   const HeaderField({
     super.key,
@@ -14,6 +14,10 @@ class HeaderField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    final formattedDate = DateFormat.yMMMMd(localizations.locale.toString())
+        .format(DateTime.now());
+
     return Container(
       margin: const EdgeInsets.only(left: 20, right: 20, top: 10),
       child: Row(
@@ -23,16 +27,18 @@ class HeaderField extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                DateFormat.yMMMMd().format(DateTime.now()),
+                formattedDate,
                 style: AppTextStyles.heading2,
               ),
-              const Text("Hôm nay", style: AppTextStyles.heading1),
+              Text(
+                localizations.today, 
+                style: AppTextStyles.heading1,
+              ),
             ],
           ),
-          // Button để thêm tác vụ mới
           ButtonAdd(
-            label: "+ Thêm",
-            onTap: onTap, // Gọi hàm onTap truyền từ ngoài vào
+            label: localizations.addButtonLabel,
+            onTap: onTap,
           ),
         ],
       ),

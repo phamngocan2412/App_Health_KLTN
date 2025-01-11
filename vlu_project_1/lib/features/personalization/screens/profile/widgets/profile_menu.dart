@@ -18,7 +18,7 @@ class ProfileMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: TSize.spaceBtwItems / 2), // Giảm padding giữa các item
+      padding: const EdgeInsets.symmetric(vertical: TSize.spaceBtwItems / 2), 
       child: Row(
         children: [
           Expanded(
@@ -42,7 +42,7 @@ class ProfileMenu extends StatelessWidget {
               onTap: onPressed,
               borderRadius: BorderRadius.circular(20.0),
               child: Padding(
-                padding: const EdgeInsets.all(8.0), // Giảm padding cho icon
+                padding: const EdgeInsets.all(8.0), 
                 child: Icon(
                   icon,
                   size: 18,

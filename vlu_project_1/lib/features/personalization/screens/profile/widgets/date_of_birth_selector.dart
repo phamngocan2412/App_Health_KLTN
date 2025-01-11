@@ -16,16 +16,15 @@ class DateOfBirthSelectorState extends State<DateOfBirthSelector> {
   @override
   void initState() {
     super.initState();
-    loadDateOfBirth(); // Tải ngày sinh từ SharedPreferences khi khởi tạo
+    loadDateOfBirth(); 
   }
 
-  // Hàm tải ngày sinh từ SharedPreferences
   Future<void> loadDateOfBirth() async {
     final prefs = await SharedPreferences.getInstance();
     String? dateString = prefs.getString('date_of_birth');
     if (dateString != null) {
-      selectedDate = DateTime.parse(dateString); // Chuyển đổi từ chuỗi sang DateTime
-      setState(() {}); // Cập nhật giao diện
+      selectedDate = DateTime.parse(dateString); 
+      setState(() {}); 
     }
   }
 
@@ -34,7 +33,7 @@ class DateOfBirthSelectorState extends State<DateOfBirthSelector> {
       context: context,
       initialDate: selectedDate,
       firstDate: DateTime(2000),
-      lastDate: DateTime(2025),
+      lastDate: DateTime(2050),
       errorFormatText: 'Nhập đúng định dạng ngày',
       errorInvalidText: 'Ngày không hợp lệ, vui lòng chọn trong khoảng thời gian hợp lệ',
       helpText: 'Chọn ngày',

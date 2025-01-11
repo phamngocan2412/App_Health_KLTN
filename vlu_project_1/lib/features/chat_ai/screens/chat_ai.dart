@@ -1,4 +1,7 @@
+// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart'; // Thêm vào package lottie
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,8 +22,9 @@ class ChatAi extends ConsumerStatefulWidget {
 class _ChatAiState extends ConsumerState<ChatAi> {
   late final TextEditingController _messageController;
   final String apiKey = dotenv.env['API_KEY'] ?? '';
-  bool _isFirstLaunch = true; // Khi ứng dụng mới được mở, hiển thị SuggestionsWidget
-  bool _isMessageSent = false; // Trạng thái để kiểm tra liệu tin nhắn đã được gửi hay chưa
+  bool _isFirstLaunch = true; 
+  bool _isMessageSent = false; 
+  bool _isLoading = false; 
 
   @override
   void initState() {
@@ -29,15 +33,20 @@ class _ChatAiState extends ConsumerState<ChatAi> {
     _messageController = TextEditingController();
   }
 
-  // Tải trạng thái _isFirstLaunch từ SharedPreferences
   Future<void> _loadFirstLaunchStatus() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      _isFirstLaunch = prefs.getBool('isFirstLaunch') ?? true;
-    });
+    bool? isFirstLaunch = prefs.getBool('isFirstLaunch');
+    if (isFirstLaunch == null) {
+      setState(() {
+        _isFirstLaunch = true; 
+      });
+      _setFirstLaunchStatus(false); 
+    } else {
+      setState(() {
+        _isFirstLaunch = false;
+      });
+    }
   }
-
-  // Lưu trạng thái _isFirstLaunch vào SharedPreferences
   Future<void> _setFirstLaunchStatus(bool value) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('isFirstLaunch', value);
@@ -89,90 +98,103 @@ class _ChatAiState extends ConsumerState<ChatAi> {
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          child: Column(
+          child: Stack(
             children: [
-              // Message List
-              Expanded(
-                child: MessagesList(
-                  userId: FirebaseAuth.instance.currentUser!.uid,
-                ),
-              ),
-              // Hiển thị SuggestionsWidget chỉ khi chưa gửi tin nhắn
-              if (_isFirstLaunch && !_isMessageSent)
-                SuggestionsWidget(
-                  onSuggestionSelected: _handleSuggestion,
-                  isFirstLaunch: _isFirstLaunch,
-                ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 25),
-                child: Container(
-                  height: 55,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
+              Column(
+                children: [
+                  // Message List
+                  Expanded(
+                    child: MessagesList(
+                      userId: FirebaseAuth.instance.currentUser!.uid,
+                    ),
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: _messageController,
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          decoration: const InputDecoration(
-                            hintText: 'Nhập câu hỏi của bạn ...',
-                            border: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 15.0),
+                  if (_isFirstLaunch && !_isMessageSent)
+                    SuggestionsWidget(
+                      onSuggestionSelected: _handleSuggestion,
+                      isFirstLaunch: _isFirstLaunch,
+                    ),
+                  const SizedBox(height: 40),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 25),
+                    child: Container(
+                      height: 55,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            spreadRadius: 5,
+                            blurRadius: 7,
+                            offset: const Offset(0, 3),
                           ),
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                        ],
                       ),
-                      const SizedBox(width: 10),
-                      // Icon to open SendImageScreen
-                      IconButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const SendImageScreen(),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: _messageController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: null,
+                              decoration: const InputDecoration(
+                                hintText: 'Nhập câu hỏi của bạn ...',
+                                border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 15.0),
+                              ),
+                              style: const TextStyle(fontSize: 16),
                             ),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.image,
-                          color: Color.fromARGB(255, 0, 140, 255),
-                        ),
+                          ),
+                          const SizedBox(width: 10),
+                          // Icon to open SendImageScreen
+                          IconButton(
+                            onPressed: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (_) => const SendImageScreen(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.image,
+                              color: Color.fromARGB(255, 0, 140, 255),
+                            ),
+                          ),
+                          // Send button
+                          IconButton(
+                            onPressed: () {
+                              if (_messageController.text.trim().isNotEmpty) {
+                                sendMessage(); 
+                              } else {
+                                Loaders.warningSnackBar(
+                                  title: "Tin nhắn không được để trống.",
+                                  message: "Vui lòng nhập nội dung.",
+                                );
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.send,
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ],
                       ),
-                      // Send button
-                      IconButton(
-                        onPressed: () {
-                          if (_messageController.text.trim().isNotEmpty) {
-                            sendMessage(); // Gọi hàm sendMessage nếu nội dung không trống
-                          } else {
-                            Loaders.warningSnackBar(
-                              title: "Tin nhắn không được để trống.",
-                              message: "Vui lòng nhập nội dung.",
-                            );
-                          }
-                        },
-                        icon: const Icon(
-                          Icons.send,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ],
+                    ),
+                  ),
+                ],
+              ),
+              if (_isLoading)
+                Positioned(
+                  bottom: 80,  
+                  left: 15,
+                  child: Lottie.asset(
+                    'assets/images/chat_loading.json',
+                    width: 50,
+                    height: 50,
                   ),
                 ),
-              ),
             ],
           ),
         ),
@@ -182,23 +204,22 @@ class _ChatAiState extends ConsumerState<ChatAi> {
 
   Future<bool> _showConfirmDeleteDialog(BuildContext context) async {
     return await showDialog<bool>(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text("Xác nhận"),
-            content: const Text("Bạn có chắc chắn muốn xóa toàn bộ lịch sử đoạn chat?"),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(false),
-                child: const Text("Hủy"),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text("Xóa", style: TextStyle(color: Colors.red)),
-              ),
-            ],
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Xác nhận"),
+        content: const Text("Bạn có chắc chắn muốn xóa toàn bộ lịch sử đoạn chat?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text("Hủy"),
           ),
-        ) ??
-        false;
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text("Xóa", style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    ) ?? false;
   }
 
   Future sendMessage() async {
@@ -208,6 +229,7 @@ class _ChatAiState extends ConsumerState<ChatAi> {
     setState(() {
       _isMessageSent = true;
       _isFirstLaunch = false; 
+      _isLoading = true;
     });
 
     _messageController.clear(); 
@@ -216,7 +238,11 @@ class _ChatAiState extends ConsumerState<ChatAi> {
       apiKey: apiKey,
       textPrompt: message,
     );
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }
-
-// colloctien snapshot 

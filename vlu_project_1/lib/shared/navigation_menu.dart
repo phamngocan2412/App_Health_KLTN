@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vlu_project_1/features/chat_ai/screens/chat_ai.dart';
@@ -37,15 +39,15 @@ class NavigationMenuState extends State<NavigationMenu> {
           currentIndex: controller.selectedIndex.value,
           onTap: (index) {
             setState(() {
-              controller.selectedIndex.value = index; // Cập nhật selectedIndex
+              controller.selectedIndex.value = index; 
             });
           },
-          selectedItemColor: Colors.red[400], // Màu khi chọn mục
-          unselectedItemColor: Colors.grey, // Màu khi chưa chọn mục
+          selectedItemColor: Colors.red[400], 
+          unselectedItemColor: Colors.grey, 
           selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
           unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w400),
-          showSelectedLabels: true, // Chỉ hiển thị nhãn khi được chọn
-          showUnselectedLabels: false, // Không hiển thị nhãn khi chưa được chọn
+          showSelectedLabels: true,
+          showUnselectedLabels: false, 
           elevation: 0,
           items: const [
             BottomNavigationBarItem(

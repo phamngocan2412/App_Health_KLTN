@@ -10,15 +10,11 @@ import 'package:vlu_project_1/shared/widgets/loaders.dart';
 
 class ForgetPasswordController extends GetxController {
   static ForgetPasswordController get instance => Get.find();
-
-  // Variables
   final email = TextEditingController();
   final GlobalKey<FormState> forgetPasswordFormKey = GlobalKey<FormState>();
 
-  // Send Reset Password Email
-  sendPasswordResentEmail() async {
+  sendPasswordResetEmail() async {
     try {
-      // Start Loading
       FullScreenLoader.openLoadingDialog(
         "Đang tải ...",
       );
@@ -40,15 +36,15 @@ class ForgetPasswordController extends GetxController {
         return;
       }
 
+      // Kiểm tra email tồn tại
       bool emailExists = await AuthenticationRepository.instance
           .checkEmailExists(email.text.trim());
-      if (emailExists) {
-        await AuthenticationRepository.instance
-            .sendPasswordResetEmail(email: email.text.trim());
-      } else {
+
+      if (!emailExists) {
         FullScreenLoader.stopLoading();
         Loaders.errorSnackBar(
             title: "Lỗi", message: "Email không tồn tại trong hệ thống.");
+        return;
       }
 
       // Gửi email đặt lại mật khẩu
@@ -85,13 +81,9 @@ class ForgetPasswordController extends GetxController {
         return;
       }
 
+      FullScreenLoader.stopLoading();
       await AuthenticationRepository.instance
           .sendPasswordResetEmail(email: email);
-
-      // Stop Loading
-      FullScreenLoader.stopLoading();
-
-      // Show Success Screen
       Loaders.successSnackBar(
           title: "Thành công",
           message: "Đã gửi đến Email của bạn, hãy làm mới mật khẩu.");

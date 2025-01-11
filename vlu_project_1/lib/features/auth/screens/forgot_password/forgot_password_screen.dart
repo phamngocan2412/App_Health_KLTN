@@ -1,5 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:vlu_project_1/core/validate.dart';
@@ -8,7 +6,6 @@ import 'package:vlu_project_1/shared/helper_functions.dart';
 import 'package:vlu_project_1/shared/size.dart';
 import 'package:vlu_project_1/shared/widgets/app_bar_custom.dart';
 import 'package:vlu_project_1/shared/widgets/text_string.dart';
-
 
 class ForgotPasswordScreen extends StatelessWidget {
   const ForgotPasswordScreen({super.key});
@@ -37,11 +34,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                   textAlign: TextAlign.center),
               const SizedBox(height: TSize.spaceBtwSections),
-              // Text Field
               Form(
                 key: controller.forgetPasswordFormKey,
                 child: TextFormField(
                   controller: controller.email,
+                  autovalidateMode: AutovalidateMode.onUserInteraction, 
                   validator: (text) {
                     return Validate.email(text, enableNullOrEmpty: false);
                   },
@@ -51,7 +48,23 @@ class ForgotPasswordScreen extends StatelessWidget {
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 16.0, horizontal: 20.0),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.black54),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.black54),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.red),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.red),
                     ),
                     prefixIconConstraints: const BoxConstraints(
                       minWidth: 70,
@@ -61,13 +74,11 @@ class ForgotPasswordScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: TSize.spaceBtwSections),
-
-              // Submit Button
               SizedBox(
                 height: 60,
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => controller.sendPasswordResentEmail(),
+                  onPressed: () => controller.sendPasswordResetEmail(),
                   child: const Text(TText.submit),
                 ),
               ),

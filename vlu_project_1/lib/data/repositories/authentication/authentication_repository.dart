@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_print, depend_on_referenced_packages
+// ignore_for_file: avoid_print, depend_on_referenced_packages, unnecessary_nullable_for_final_variable_declarations
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,17 +21,13 @@ import 'package:vlu_project_1/storage.dart';
 
 class AuthenticationRepository extends GetxController {
   static AuthenticationRepository get instance => Get.find();
-
-  // Variables
   final _storageService = StorageService();
   final _auth = FirebaseAuth.instance;
 
   User? get authUser => _auth.currentUser;
 
-  // Called from
   @override
   void onReady() {
-    // Remove the native splash screen
     FlutterNativeSplash.remove();
     screenRedirect();
   }
@@ -40,9 +36,12 @@ class AuthenticationRepository extends GetxController {
     final user = _auth.currentUser;
 
     if (user != null) {
-      if (user.emailVerified) {
+
+      if (user.emailVerified || user.providerData.any((userInfo) => userInfo.providerId == 'facebook.com')) {
+        print('Chuyển hướng đến NavigationMenu...');
         Get.offAll(() => const NavigationMenu());
       } else {
+        print('Chuyển hướng đến VerifyEmailScreen...');
         Get.offAll(() => VerifyEmailScreen(email: user.email));
       }
     } else {
@@ -98,7 +97,7 @@ class AuthenticationRepository extends GetxController {
       final userCredential = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
 
-      await _storageService.saveData('UserLoggedIn', true); // Lưu trạng thái đăng nhập
+      await _storageService.saveData('UserLoggedIn', true);
       return userCredential;
     } on FirebaseAuthException catch (e) {
       print("FirebaseAuthException: ${e.message}");
@@ -157,18 +156,15 @@ class AuthenticationRepository extends GetxController {
     } else {
       print("Email không tồn tại.");
       return false;
+      
     }
   }
 
   // Update Name
   Future<void> updateUserName(String newName) async {
     try {
-      // Update user's display name in Firebase Auth
       await _auth.currentUser?.updateProfile(displayName: newName);
-      // Refresh the user to get the updated information
       await _auth.currentUser?.reload();
-
-      // After updating the profile, update the name in Firestore
       if (authUser != null) {
         await FirebaseFirestore.instance
             .collection('Users')
@@ -244,20 +240,17 @@ class AuthenticationRepository extends GetxController {
   Future<UserCredential?> signInWithGoogle() async {
     try {
       final GoogleSignInAccount? userAccount = await GoogleSignIn().signIn();
-      
-      // Kiểm tra nếu người dùng hủy đăng nhập
       if (userAccount == null) {
-        FullScreenLoader.stopLoading(); // Dừng loading nếu người dùng hủy đăng nhập
+        FullScreenLoader.stopLoading(); 
         Get.offAll(() => const SignInScreen());
         throw Exception('Người dùng đã hủy đăng nhập.');
       }
 
       final GoogleSignInAuthentication? googleAuth = await userAccount.authentication;
 
-      // Kiểm tra nếu googleAuth là null
       if (googleAuth == null) {
         FullScreenLoader.stopLoading();
-        Get.offAll(() => const SignInScreen()); // Dừng loading nếu googleAuth là null
+        Get.offAll(() => const SignInScreen());
         throw Exception('Lỗi xác thực từ Google.');
       }
 
@@ -268,21 +261,21 @@ class AuthenticationRepository extends GetxController {
 
       return await _auth.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
-      FullScreenLoader.stopLoading(); // Dừng loading nếu có lỗi FirebaseAuthException
+      FullScreenLoader.stopLoading(); 
       throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
-      FullScreenLoader.stopLoading(); // Dừng loading nếu có lỗi FirebaseException
+      FullScreenLoader.stopLoading(); 
       throw TFirebaseException(e.code).message;
     } on FormatException catch (_) {
-      FullScreenLoader.stopLoading(); // Dừng loading nếu có lỗi FormatException
+      FullScreenLoader.stopLoading(); 
       throw const TFormatException();
     } on PlatformException catch (e) {
-      FullScreenLoader.stopLoading(); // Dừng loading nếu có lỗi PlatformException
+      FullScreenLoader.stopLoading(); 
       throw TPlatformException(e.code).message;
     } catch (e) {
-      FullScreenLoader.stopLoading(); // Dừng loading nếu có lỗi khác
+      FullScreenLoader.stopLoading();
       if (kDebugMode) print('Có gì đó không đúng: $e');
-      throw Exception('Đăng nhập thất bại.'); // Ném ngoại lệ rõ ràng
+      throw Exception('Đăng nhập thất bại.');
     }
   }
 
@@ -292,62 +285,58 @@ class AuthenticationRepository extends GetxController {
 
   Future<UserCredential> signInWithFacebook() async {
     try {
-      // Đăng nhập với Facebook
+      print('Bắt đầu xác thực Facebook...');
       final LoginResult loginResult = await FacebookAuth.instance.login(permissions: ['email', 'public_profile']);
+      print('Kết quả đăng nhập Facebook: ${loginResult.status}');
 
-      // Kiểm tra nếu người dùng hủy đăng nhập
       if (loginResult.status == LoginStatus.cancelled) {
+        print('Người dùng đã hủy đăng nhập Facebook.');
         FullScreenLoader.stopLoading();
         Get.offAll(() => const SignInScreen());
-        return Future.error('Người dùng đã hủy đăng nhập.');
+        throw Exception('Người dùng đã hủy đăng nhập.');
       }
 
-      // Kiểm tra nếu có lỗi trong quá trình đăng nhập
       if (loginResult.status != LoginStatus.success) {
+        print('Đăng nhập Facebook thất bại: ${loginResult.status}');
         FullScreenLoader.stopLoading();
         Get.offAll(() => const SignInScreen());
-        return Future.error('Đăng nhập Facebook thất bại.');
+        throw Exception('Đăng nhập Facebook thất bại.');
       }
 
-      // Đăng nhập vào Firebase bằng token Facebook
-      final AuthCredential credential =
-          FacebookAuthProvider.credential(loginResult.accessToken!.tokenString);
-      
-      UserCredential userCredential = await _auth.signInWithCredential(credential);
+      print('Lấy access token từ Facebook...');
+      final AccessToken accessToken = loginResult.accessToken!;
+      print('Access token: ${accessToken.tokenString}');
 
-      // Kiểm tra nếu đăng nhập bằng Facebook thì bỏ qua xác minh email
-      if (userCredential.additionalUserInfo?.providerId == 'facebook.com') {
-        // Không yêu cầu xác minh email
-        return userCredential;
-      }
+      print('Tạo credential từ Facebook...');
+      final OAuthCredential credential = FacebookAuthProvider.credential(accessToken.tokenString);
 
-      // Nếu muốn xác minh email trong các trường hợp khác (ngoại trừ Facebook), xử lý tại đây
-      if (userCredential.user != null && !userCredential.user!.emailVerified) {
-        await userCredential.user!.sendEmailVerification();
-      }
+      print('Đăng nhập vào Firebase bằng credential Facebook...');
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      print('Đăng nhập Firebase thành công: ${userCredential.user?.uid}');
 
-    return userCredential;
+      return userCredential;
     } on FirebaseAuthException catch (e) {
+      print('Lỗi FirebaseAuthException: ${e.code}');
       FullScreenLoader.stopLoading();
-      return Future.error(TFirebaseAuthException(e.code).message);
+      throw TFirebaseAuthException(e.code).message;
     } on FirebaseException catch (e) {
+      print('Lỗi FirebaseException: ${e.code}');
       FullScreenLoader.stopLoading();
-      return Future.error(TFirebaseException(e.code).message);
+      throw TFirebaseException(e.code).message;
     } on FormatException catch (_) {
+      print('Lỗi FormatException');
       FullScreenLoader.stopLoading();
-      return Future.error(const TFormatException());
+      throw const TFormatException();
     } on PlatformException catch (e) {
+      print('Lỗi PlatformException: ${e.code}');
       FullScreenLoader.stopLoading();
-      return Future.error(TPlatformException(e.code).message);
+      throw TPlatformException(e.code).message;
     } catch (e) {
+      print('Lỗi không xác định: $e');
       FullScreenLoader.stopLoading();
-      if (kDebugMode) print('Có gì đó không đúng: $e');
-      return Future.error('Đăng nhập thất bại.');
+      throw Exception('Đăng nhập thất bại.');
     }
   }
-
-
-
 
     /* ----------------------- ./end Federated identity & social sign-in ----------------------- */
 

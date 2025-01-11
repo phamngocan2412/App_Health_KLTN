@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../core/providers/providers.dart';
 import '../../../core/utils/image_picker.dart';
@@ -133,9 +134,11 @@ class _SendImageScreenState extends ConsumerState<SendImageScreen> {
             Padding(
               padding: const EdgeInsets.all(30.0),
               child: isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 5,
+                  ? Center(
+                      child: Lottie.asset(
+                        'assets/images/chat_loading.json',
+                        width: 100,
+                        height: 100,
                       ),
                     )
                   : SizedBox(

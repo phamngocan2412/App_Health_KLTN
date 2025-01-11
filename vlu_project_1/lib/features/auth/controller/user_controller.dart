@@ -1,11 +1,11 @@
-// ignore_for_file: depend_on_referenced_packages
+// ignore_for_file: depend_on_referenced_packages, avoid_print
 
-import 'dart:convert';
 
+import 'package:cloudinary/cloudinary.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart' as http;
 import 'package:vlu_project_1/core/utils/network.dart';
 import 'package:vlu_project_1/data/repositories/authentication/authentication_repository.dart';
 import 'package:vlu_project_1/data/repositories/user/user_repository.dart';
@@ -27,6 +27,7 @@ class UserController extends GetxController {
   final verifyEmail = TextEditingController();
   final verifyPassword = TextEditingController();
   final reAuthFormKey = GlobalKey<FormState>();
+  final UserRepository _userRepository = UserRepository();
 
   @override
   void onInit() {
@@ -82,7 +83,6 @@ class UserController extends GetxController {
     }
   }
 
-  // Delete Account Warning Popup
   void deleteAccountWarningPopup() {
     Get.defaultDialog(
       radius: 40,
@@ -113,7 +113,7 @@ class UserController extends GetxController {
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
-              color: Colors.black54, // Màu sắc trung tính cho phần mô tả
+              color: Colors.black54, 
             ),
           ),
           const SizedBox(height: 24),
@@ -143,7 +143,7 @@ class UserController extends GetxController {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                   backgroundColor:
-                      Colors.redAccent, // Màu đỏ nổi bật cho nút xóa
+                      Colors.redAccent, 
                   elevation: 0,
                 ),
                 child: const Text(
@@ -166,7 +166,6 @@ class UserController extends GetxController {
     try {
       FullScreenLoader.openLoadingDialog('Đang xóa ...');
 
-      // First re-authenticate user
       final auth = AuthenticationRepository.instance;
       final provider =
           auth.authUser!.providerData.map((e) => e.providerId).first;
@@ -186,7 +185,6 @@ class UserController extends GetxController {
     }
   }
 
-  // Re-Authenticate User
   Future<void> reAuthenticateEmailAndPasswordUser() async {
     try {
       FullScreenLoader.openLoadingDialog('Đang xử lý ...');
@@ -219,20 +217,27 @@ class UserController extends GetxController {
     }
   }
 
-  // Upload Profile Picture
+  final cloudinary = Cloudinary.signedConfig(
+    cloudName: dotenv.env['CLOUDINARY_CLOUD_NAME']!,
+    apiKey: dotenv.env['CLOUDINARY_API_KEY']!,
+    apiSecret: dotenv.env['CLOUDINARY_API_SECRET']!,
+  );
+
   Future<String> uploadImageToNodeServer(XFile imageFile) async {
-    final url = Uri.parse('http://192.168.1.9:8000/upload');
-    final request = http.MultipartRequest('POST', url);
+    try {
+      final response = await cloudinary.upload(
+        file: imageFile.path,
+        resourceType: CloudinaryResourceType.image,
+        folder: 'profile_pictures', // Tùy chọn
+      );
 
-    request.files.add(await http.MultipartFile.fromPath('image', imageFile.path));
-
-    final response = await request.send();
-    if (response.statusCode == 200) {
-      final responseBody = await response.stream.bytesToString();
-      final responseData = json.decode(responseBody);
-      return responseData['imageUrl'];
-    } else {
-      throw Exception('Failed to upload image');
+      if (response.isSuccessful) {
+        return response.secureUrl!;
+      } else {
+        throw Exception('Failed to upload image to Cloudinary: ${response.error}');
+      }
+    } catch (e) {
+      throw Exception('Failed to upload image: $e');
     }
   }
 
@@ -259,6 +264,39 @@ class UserController extends GetxController {
       }
     } catch (error) {
       Loaders.errorSnackBar(title: 'Lỗi', message: error.toString());
+      print("$error");
+    }
+  }
+  
+  //Change Password
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    try {
+      await _userRepository.changePassword(oldPassword, newPassword);
+      Get.snackbar('Success', 'Password changed successfully');
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    }
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      FullScreenLoader.openLoadingDialog("Đang tải ...");
+      final isConnected = await NetworkManager.instance.isConnected();
+      if (!isConnected) {
+        Loaders.errorSnackBar(
+            title: 'Lỗi', message: 'Không có kết nối Internet');
+        FullScreenLoader.stopLoading();
+        return;
+      }
+
+      await _userRepository.updatePassword(newPassword);
+      Get.back();
+      FullScreenLoader.stopLoading();
+      Loaders.successSnackBar(
+          title: 'Thành công', message: 'Cập nhật tên thành công');
+
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
     }
   }
 }

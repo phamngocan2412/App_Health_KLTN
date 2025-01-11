@@ -3,7 +3,6 @@
 // ignore_for_file: avoid_print, deprecated_member_use
 
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -11,7 +10,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:vlu_project_1/core/services/notification_services.dart';
 import 'package:vlu_project_1/core/utils/assets/theme.dart';
 import 'package:vlu_project_1/features/home/controllers/task_controller.dart';
-import 'package:vlu_project_1/features/home/models/task.dart';
 import 'package:vlu_project_1/features/home/screens/add_task_bar.dart';
 import 'package:vlu_project_1/features/home/screens/widget_home/header_field.dart';
 import 'package:vlu_project_1/features/home/screens/widget_home/home_app_bar.dart';
@@ -38,8 +36,6 @@ class _HomePageState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    // Đảm bảo quyền chỉ được yêu cầu ở đây
     Future.delayed(Duration.zero, () {
       _checkFilePermissions();
     });
@@ -55,9 +51,17 @@ class _HomePageState extends State<HomeScreen> {
       if (mounted) {
         await PermissionManager.checkAndRequestStoragePermission(context);
       }
-      // Kiểm tra lại sau khi yêu cầu cấp quyền
       if (!await Permission.storage.isGranted) {
         print("Người dùng từ chối quyền lưu trữ.");
+      }
+    }
+    
+    if (!await Permission.scheduleExactAlarm.isGranted) {
+      if (mounted) {
+        await PermissionManager.requestAlarmPermission(context);
+      }
+      if (!await Permission.scheduleExactAlarm.isGranted) {
+        print("Người dùng từ chối quyền đồng hồ.");
       }
     }
   }
@@ -105,9 +109,6 @@ class _HomePageState extends State<HomeScreen> {
                     List<String> timeParts = startTime.replaceAll(RegExp(r'\s+'), '').split(":");
                     int hour = int.parse(timeParts[0]);
                     int minute = int.parse(timeParts[1].substring(0, 2));
-                    if (startTime.contains("PM") && hour != 12) {
-                      hour += 12;
-                    }
                     NotifyHelper.showScheduleNotification(task: task ,hour :hour, minutes: minute);
 
                     if ((task.repeat == 'Hằng ngày') ||
@@ -117,38 +118,46 @@ class _HomePageState extends State<HomeScreen> {
                       (task.repeat == 'Hằng tháng' &&
                           DateFormat('dd/MM/yyyy').parse(task.date).day == selectedDate.day)) 
                     {
-                      return AnimationConfiguration.staggeredList(
-                        position: index,
-                        duration: const Duration(milliseconds: 800),
-                        child: SlideAnimation(
-                          verticalOffset: 300,
-                          child: FadeInAnimation(
-                            child: Dismissible(
-                              key: Key(task.id.toString()),
-                              direction: DismissDirection.endToStart,
-                              onDismissed: (direction) {
-                                _taskController.deleteask(task: task);
-                                Loaders.successSnackBar(title: "Xóa nhiệm vụ", message: "Nhiệm vụ đã bị xóa.");
-                              },
-                              background: Container(
-                                color: Colors.red, // Màu nền khi lướt qua
-                                alignment: Alignment.centerRight,
-                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                                child: const Icon(
-                                  Icons.delete,
+                      return Dismissible(
+                        key: Key(task.id.toString()),
+                        direction: DismissDirection.endToStart,
+                        onDismissed: (direction) {
+                          _taskController.deleteTask(task: task);
+                          Loaders.successSnackBar(title: "Xóa nhiệm vụ", message: "Nhiệm vụ đã bị xóa.");
+                        },
+                        background: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 8), 
+                          decoration: BoxDecoration(
+                            color: Colors.red, 
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          alignment: Alignment.centerRight,
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                                size: 30,
+                              ),
+                              SizedBox(width: 8),
+                              Text(
+                                "Xóa",
+                                style: TextStyle(
                                   color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              child: GestureDetector(
-                                onTap: () => _showBottomSheet(context, task),
-                                child: TaskTile(task: task),
-                              ),
-                            ),
+                            ],
                           ),
                         ),
+                        child: TaskTile(task: task),
                       );
+
                     } else {
-                      return _noTaskMsg();
+                      return Container();
                     }
                   }
               ),
@@ -179,94 +188,6 @@ class _HomePageState extends State<HomeScreen> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-
-  _showBottomSheet(BuildContext context, Task task) {
-    Get.bottomSheet(SingleChildScrollView(
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        height: task.isCompleted == 1
-            ? MediaQuery.of(context).size.height * 0.24
-            : MediaQuery.of(context).size.height * 0.32,
-        color: Colors.white,
-        child: Column(
-          children: [
-            Container(
-              height: 6,
-              width: 200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.grey[300],
-              ),
-            ),
-            const Spacer(),
-            task.isCompleted == 1
-                ? Container()
-                : _bottomSheetButton(
-                    label: "Nhắc nhở hoàn thành",
-                    onTap: () {
-                      NotifyHelper.cancelNotififcationWithID(task.id!);
-                      _taskController.markTaskAsCompleted(task : task);
-                      Get.back();
-                      Loaders.successSnackBar(title: "Nhắc nhở", message:"Đã đóng");
-                    },
-                    clr: Colors.blue,
-                  ),
-            const SizedBox(height: 5),
-            _bottomSheetButton(
-              label: "Xóa nhắc nhở",
-              onTap: () {
-                _taskController.deleteask(task : task);
-                Get.back();
-              },
-              clr: Colors.red[300]!,
-            ),
-            const SizedBox(height: 20),
-            _bottomSheetButton(
-              label: "Đóng",
-              onTap: () {
-                Get.back();
-              },
-              clr: Colors.white,
-              isClose: true,
-            ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      )
-    ));
-  }
-
-  _bottomSheetButton({
-    required String label,
-    required Function() onTap,
-    required Color clr,
-    bool isClose = false,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        height: 65,
-        width: SizeConfig.screenWidth * 0.9,
-        decoration: BoxDecoration(
-            border: Border.all(
-              width: 2,
-              color: isClose ? Colors.grey[600]! : clr,
-            ),
-            borderRadius: BorderRadius.circular(25),
-            color: isClose ? Colors.transparent : clr),
-        child: Center(
-          child: Text(
-            label,
-            style:
-                isClose ? titleStyle : titleStyle.copyWith(color: Colors.white),
-          ),
         ),
       ),
     );

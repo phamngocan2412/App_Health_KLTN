@@ -33,11 +33,11 @@ class SuccessScreen extends StatelessWidget {
             // Title & SubTitle
             Text(title,
                 style: const TextStyle(fontSize: 24),
-                textAlign: TextAlign.center), // Example title
+                textAlign: TextAlign.center),
             const SizedBox(height: TSize.spaceBtwItems),
             Text(subTitle,
                 style: const TextStyle(fontSize: 16),
-                textAlign: TextAlign.center), // Example subtitle
+                textAlign: TextAlign.center), 
             const SizedBox(height: TSize.spaceBtwSections),
             SizedBox(
               width: double.infinity,

@@ -13,7 +13,6 @@ import 'package:vlu_project_1/shared/widgets/loaders.dart';
 class SignUpController extends GetxController {
   static SignUpController get instance => Get.find();
 
-  // --- Variables for Sign Up ---
   final privacyPolicy = true.obs;
   final hidePassword = true.obs;
   final emailSignUp = TextEditingController();
@@ -24,7 +23,6 @@ class SignUpController extends GetxController {
   final phoneNumber = TextEditingController();
   final GlobalKey<FormState> signUpFormKey = GlobalKey<FormState>();
 
-  // Sign In Method
   void signUp() async {
     if (signUpFormKey.currentState!.validate()) {
       try {
@@ -41,13 +39,13 @@ class SignUpController extends GetxController {
 
         // Form Validation
         if (!signUpFormKey.currentState!.validate()) {
-          FullScreenLoader.stopLoading(); // Stop loader if form invalid
+          FullScreenLoader.stopLoading();
           return;
         }
 
         // Privacy Policy Validation
         if (!privacyPolicy.value) {
-          FullScreenLoader.stopLoading(); // Stop loader if policy not accepted
+          FullScreenLoader.stopLoading();
           Loaders.warningSnackBar(
               title: 'Đồng ý với điều kiện bảo mật ',
               message:
@@ -61,7 +59,6 @@ class SignUpController extends GetxController {
                 email: emailSignUp.text.trim(),
                 password: passwordSignUp.text.trim());
 
-        // Save Authentication user data in the Firebase
         final newUser = UserModel(
           id: userCredential.user!.uid,
           firstName: firstName.text.trim(),
@@ -75,14 +72,11 @@ class SignUpController extends GetxController {
         final userRepository = Get.put(UserRepository());
         await userRepository.saveUserRecord(newUser);
 
-        // Remove Loader
         FullScreenLoader.stopLoading();
-
-        // Show Success Message
         Loaders.successSnackBar(
             title: 'Chúc mừng',
             message: 'Tài khoản đã được tạo thành công! Hãy kiểm tra email.');
-        // Move to Verify Email Screen
+
         if (Get.context != null) {
           Get.to(() => VerifyEmailScreen(email: emailSignUp.text.trim()));
         }

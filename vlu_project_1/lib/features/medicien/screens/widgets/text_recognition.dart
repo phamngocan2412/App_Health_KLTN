@@ -8,7 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:vlu_project_1/permission_manager.dart';
 
 import '../../../../shared/image_preview.dart';
-import 'firebase_firestore.dart';
+import 'text_firebase_firestore.dart';
 
 class TextRecognitionWidget extends StatefulWidget {
   const TextRecognitionWidget({super.key});
@@ -24,17 +24,23 @@ class _TextRecognitionWidgetState extends State<TextRecognitionWidget> {
 
   String? pickedImagePath;
   String recognizedText = "";
-
   bool isRecognizing = false;
+
+  // Thêm TextEditingController để quản lý văn bản chỉnh sửa
+  final TextEditingController _textEditingController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, () {
-      _checkCameraPermissions();
-    });
     textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
     imagePicker = ImagePicker();
+  }
+
+  @override
+  void dispose() {
+    _textEditingController.dispose();
+    textRecognizer.close();
+    super.dispose();
   }
 
   Future<void> _checkCameraPermissions() async {
@@ -42,18 +48,17 @@ class _TextRecognitionWidgetState extends State<TextRecognitionWidget> {
       if (mounted) {
         await PermissionManager.checkAndRequestCameraPermission(context);
       }
-      // Kiểm tra lại sau khi yêu cầu cấp quyền
       if (!await Permission.storage.isGranted) {
         print("Người dùng từ chối quyền lưu trữ.");
       }
     }
   }
 
-
+  // Lưu văn bản vào Firestore
   Future<void> _saveTextToFirestore() async {
-    if (recognizedText.isNotEmpty) {
+    if (_textEditingController.text.isNotEmpty) {
       try {
-        await _firestoreService.saveRecognizedText(recognizedText);
+        await _firestoreService.saveRecognizedText(_textEditingController.text);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Văn bản đã được lưu vào Firestore')),
@@ -95,6 +100,8 @@ class _TextRecognitionWidgetState extends State<TextRecognitionWidget> {
           recognizedText += "${line.text}\n";
         }
       }
+
+      _textEditingController.text = recognizedText;
     } catch (e) {
       if (!mounted) {
         return;
@@ -102,7 +109,7 @@ class _TextRecognitionWidgetState extends State<TextRecognitionWidget> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error recognizing text: $e'),
+          content: Text('Lỗi khi nhận dạng văn bản: $e'),
         ),
       );
     } finally {
@@ -125,6 +132,7 @@ class _TextRecognitionWidgetState extends State<TextRecognitionWidget> {
                 leading: const Icon(Icons.photo_library),
                 title: const Text('Chọn từ thư viện'),
                 onTap: () {
+                  _checkCameraPermissions();
                   Navigator.pop(context);
                   _pickImageAndProcess(source: ImageSource.gallery);
                 },
@@ -144,9 +152,10 @@ class _TextRecognitionWidgetState extends State<TextRecognitionWidget> {
     );
   }
 
+
   void _copyTextToClipboard() async {
-    if (recognizedText.isNotEmpty) {
-      await Clipboard.setData(ClipboardData(text: recognizedText));
+    if (_textEditingController.text.isNotEmpty) {
+      await Clipboard.setData(ClipboardData(text: _textEditingController.text));
       if (!mounted) {
         return;
       }
@@ -161,95 +170,96 @@ class _TextRecognitionWidgetState extends State<TextRecognitionWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: ImagePreview(imagePath: pickedImagePath),
-        ),
-        const SizedBox(height: 10),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20), // rounded corners
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Nhận dạng văn bản từ hình ảnh"),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ImagePreview(imagePath: pickedImagePath),
             ),
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15), // padding
-          ),
-          onPressed: isRecognizing ? null : _chooseImageSourceModal,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Chọn một hình ảnh'),
-              if (isRecognizing) ...[
-                const SizedBox(width: 20),
-                const SizedBox(
-                  width: 20,
-                  height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 1.5,
-                  ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ],
-            ],
-          ),
-        ),
-        const SizedBox(height: 20),
-        const Divider(),
-        Padding(
-          padding: const EdgeInsets.only(
-            left: 16,
-            right: 16,
-            bottom: 16,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const Text(
-                "Chuyển đổi sang văn bản",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               ),
-              const Spacer(),
-              IconButton(
-                icon: const Icon(
-                  Icons.copy,
-                  size: 20,
-                ),
-                onPressed: _copyTextToClipboard,
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.save,
-                  size: 25,
-                ),
-                onPressed: _saveTextToFirestore,
-              ),
-            ],
-          ),
-        ),
-        if (!isRecognizing) ...[
-          Expanded(
-            child: Scrollbar(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    Flexible(
-                      child: SelectableText(
-                        recognizedText.isEmpty
-                            ? "Không nhận dạng được văn bản"
-                            : recognizedText,
+              onPressed: isRecognizing ? null : _chooseImageSourceModal,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Chọn một hình ảnh'),
+                  if (isRecognizing) ...[
+                    const SizedBox(width: 20),
+                    const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 1.5,
                       ),
                     ),
                   ],
-                ),
+                ],
               ),
             ),
-          ),
-
-        ],
-      ],
+            const SizedBox(height: 20),
+            const Divider(),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Chuyển đổi sang văn bản",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.copy,
+                      size: 20,
+                    ),
+                    onPressed: _copyTextToClipboard,
+                  ),
+                  IconButton(
+                    icon: const Icon(
+                      Icons.save,
+                      size: 25,
+                    ),
+                    onPressed: _saveTextToFirestore,
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                controller: _textEditingController,
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                decoration: const InputDecoration(
+                  border: InputBorder.none, 
+                  enabledBorder: InputBorder.none, 
+                  focusedBorder: InputBorder.none,
+                  hintText: "Văn bản nhận dạng sẽ hiển thị ở đây",
+                ),
+                onChanged: (value) {
+                  recognizedText = value;
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
+
 }

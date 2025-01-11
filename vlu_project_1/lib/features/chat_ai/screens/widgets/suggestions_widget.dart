@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 
 class SuggestionsWidget extends StatelessWidget {
@@ -8,8 +10,7 @@ class SuggestionsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (!isFirstLaunch) return Container(); // Không hiển thị nếu không phải lần đầu mở app
-
+    if (!isFirstLaunch) return Container();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
@@ -24,13 +25,11 @@ class SuggestionsWidget extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Flexible(
-                child: Text(
-                  "Cách chữa đau họng bằng phương pháp dân gian là gì?",
-                  style: TextStyle(fontSize: 15, color: Colors.black),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
+              child: const Text(
+                "Cách chữa đau họng bằng phương pháp dân gian là gì?",
+                style: TextStyle(fontSize: 15, color: Colors.black),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ),
@@ -43,14 +42,12 @@ class SuggestionsWidget extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Flexible(
-                child: Text(
-                  "Phương pháp dân gian trị cảm cúm hiệu quả là gì?",
-                  style: TextStyle(fontSize: 15, color: Colors.black),
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
-                  maxLines: 2,
-                ),
+              child: const Text(
+                "Phương pháp dân gian trị cảm cúm hiệu quả là gì?",
+                style: TextStyle(fontSize: 15, color: Colors.black),
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                maxLines: 2,
               ),
             ),
           ),
@@ -63,14 +60,12 @@ class SuggestionsWidget extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Flexible(
-                child: Text(
-                  "Cách chữa đau đầu hiệu quả là gì?",
-                  style: TextStyle(fontSize: 15, color: Colors.black),
-                  overflow: TextOverflow.ellipsis,
-                  softWrap: true,
-                  maxLines: 1,
-                ),
+              child: const Text(
+                "Cách chữa đau đầu hiệu quả là gì?",
+                style: TextStyle(fontSize: 15, color: Colors.black),
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                maxLines: 1,
               ),
             ),
           ),
@@ -83,12 +78,10 @@ class SuggestionsWidget extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Flexible(
-                child: Text(
-                  "Cách giảm mỏi mắt khi sử dụng điện thoại lâu là gì?",
-                  style: TextStyle(fontSize: 15, color: Colors.black),
-                  overflow: TextOverflow.ellipsis,
-                ),
+              child: const Text(
+                "Cách giảm mỏi mắt khi sử dụng điện thoại lâu là gì?",
+                style: TextStyle(fontSize: 15, color: Colors.black),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),

@@ -1,6 +1,6 @@
+// ignore: depend_on_referenced_packages
 import 'package:flutter/material.dart';
 import 'package:vlu_project_1/core/validate.dart';
-// ignore: depend_on_referenced_packages
 import 'package:get/get.dart';
 import 'package:vlu_project_1/features/personalization/controllers/update_user_name_controller.dart';
 import 'package:vlu_project_1/shared/size.dart';

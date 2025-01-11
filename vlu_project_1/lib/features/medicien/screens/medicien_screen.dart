@@ -1,6 +1,7 @@
-// ignore_for_file: avoid_print
+// ignore_for_file: deprecated_member_use
 
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:vlu_project_1/shared/widgets/custom_search_bar.dart';
 import '../controllers/medicine_controller.dart';
 import '../models/medicien.dart';
@@ -21,13 +22,13 @@ class MedicineScreenState extends State<MedicineScreen> with SingleTickerProvide
   final MedicineController medicineController = MedicineController();
   final TextEditingController searchController = TextEditingController();
   String searchQuery = '';
+  bool isLoading = false;
   
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    // Khởi tạo TabController với 2 tab
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -90,74 +91,88 @@ class MedicineScreenState extends State<MedicineScreen> with SingleTickerProvide
                   onChanged: (value) {
                     setState(() {
                       searchQuery = value;
+                      isLoading = true;
+                    });
+                    
+                    Future.delayed(const Duration(seconds: 2), () {
+                      setState(() {
+                        isLoading = false;
+                      });
                     });
                   },
                   onClear: () {
                     setState(() {
                       searchQuery = '';
                       searchController.clear();
+                      isLoading = false; 
                     });
                   },
                 ),
               ),
               Expanded(
-              child: StreamBuilder<List<Medicine>>(
-                stream: searchQuery.isEmpty
-                    ? medicineController.getMedicines()
-                    : medicineController.searchMedicines(searchQuery),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    debugPrint('Lỗi: ${snapshot.error}');
-                    return Center(child: Text('Lỗi: ${snapshot.error}'));
-                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/images/list_view.png',
-                            width: 300,
-                            height: 300,
-                            fit: BoxFit.cover,
-                          ),
-                          const Text(
-                            'Không tìm thấy thuốc nào',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.grey,
+                child: StreamBuilder<List<Medicine>>(
+                  stream: searchQuery.isEmpty
+                      ? medicineController.getMedicines()
+                      : medicineController.searchMedicines(searchQuery),
+                  builder: (context, snapshot) {
+                    if (isLoading) {
+                      return Center(
+                        child: Lottie.asset(
+                          'assets/images/loading_search.json',
+                          width: 200,
+                          height: 200,
+                        ),
+                      );
+                    } else if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Lỗi: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset(
+                              'assets/images/list_view.png',
+                              width: 300,
+                              height: 300,
+                              fit: BoxFit.cover,
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    final medicines = snapshot.data!;
-                    return ListView.builder(
-                      itemCount: medicines.length,
-                      itemBuilder: (context, index) {
-                        final medicine = medicines[index];
-                        return MedicineCard(
-                          medicine: medicine,
-                          onEdit: () => _showMedicineForm(medicine: medicine),
-                          onDelete: () => medicineController.deleteMedicine(medicine.id),
-                        );
-                      },
-                    );
-                  }
-                },
+                            const Text(
+                              'Không tìm thấy thuốc nào',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      final medicines = snapshot.data!;
+                      return ListView.builder(
+                        itemCount: medicines.length,
+                        itemBuilder: (context, index) {
+                          final medicine = medicines[index];
+                          return MedicineCard(
+                            medicine: medicine,
+                            onEdit: () => _showMedicineForm(medicine: medicine),
+                            onDelete: () => medicineController.deleteMedicine(medicine.id),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
               ),
-            ),
-
             ],
           ),
 
           // Tab 2: Scan for Text
           const TextRecognitionWidget(),
           // Tab 3: Show Text
-          RecognizedTextList(),
+          const RecognizedTextList(),
         ],
       ),
     );

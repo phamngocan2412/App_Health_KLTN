@@ -38,7 +38,7 @@ class GenderSelectorState extends State<GenderSelector> {
             onChanged: (value) {
               setState(() {
                 selectedGender = value!;
-                widget.onValueChanged(selectedGender); // Gọi callback khi chọn mới
+                widget.onValueChanged(selectedGender); 
               });
             },
           ),
@@ -51,7 +51,7 @@ class GenderSelectorState extends State<GenderSelector> {
             onChanged: (value) {
               setState(() {
                 selectedGender = value!;
-                widget.onValueChanged(selectedGender); // Gọi callback khi chọn mới
+                widget.onValueChanged(selectedGender); 
               });
             },
           ),
@@ -64,7 +64,7 @@ class GenderSelectorState extends State<GenderSelector> {
             onChanged: (value) {
               setState(() {
                 selectedGender = value!;
-                widget.onValueChanged(selectedGender); // Gọi callback khi chọn mới
+                widget.onValueChanged(selectedGender); 
               });
             },
           ),

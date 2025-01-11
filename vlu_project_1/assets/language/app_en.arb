@@ -1,0 +1,13 @@
+{
+    "calendar": "Calendar",
+    "today": "Today",
+    "addButtonLabel": "+ Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "error": "Error",
+    "success": "Success",
+    "noData": "No data available"
+  }
+  

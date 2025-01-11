@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../../../../localization.dart';
 
 class ListCalendar extends StatefulWidget {
   final ValueChanged<DateTime> onDateChange;
@@ -16,10 +17,12 @@ class ListCalendar extends StatefulWidget {
 class _ListCalendarState extends State<ListCalendar> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  CalendarFormat _calendarFormat = CalendarFormat.week; // Default format is week
+  CalendarFormat _calendarFormat = CalendarFormat.week;
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context);
+
     return Container(
       margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -35,7 +38,6 @@ class _ListCalendarState extends State<ListCalendar> {
       ),
       child: Column(
         children: [
-          // Header with icons to switch calendar view format
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -48,9 +50,9 @@ class _ListCalendarState extends State<ListCalendar> {
                   widget.onDateChange(_focusedDay);
                 },
               ),
-              const Text(
-                'Calendar',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              Text(
+                localization.calendar,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               IconButton(
                 icon: Icon(
@@ -69,8 +71,8 @@ class _ListCalendarState extends State<ListCalendar> {
               ),
             ],
           ),
-          // TableCalendar widget
           TableCalendar(
+            locale: localization.locale.languageCode, 
             firstDay: DateTime(2010),
             lastDay: DateTime(2200),
             focusedDay: _focusedDay,
@@ -97,17 +99,20 @@ class _ListCalendarState extends State<ListCalendar> {
               ),
               outsideDaysVisible: false,
             ),
-            headerStyle: const HeaderStyle(
-              formatButtonVisible: false,
+            headerStyle: HeaderStyle(
               titleCentered: true,
-              titleTextStyle: TextStyle(
+              titleTextFormatter: (date, locale) {
+                return '${localization.month} ${date.month}, ${date.year}';
+              },
+              titleTextStyle: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
-              leftChevronIcon: Icon(Icons.chevron_left, color: Colors.blue),
-              rightChevronIcon: Icon(Icons.chevron_right, color: Colors.blue),
+              formatButtonVisible: false,
+              leftChevronIcon: const Icon(Icons.chevron_left, color: Colors.blue),
+              rightChevronIcon: const Icon(Icons.chevron_right, color: Colors.blue),
             ),
-            calendarFormat: _calendarFormat, // Use the selected format (week/month)
+            calendarFormat: _calendarFormat,
           ),
         ],
       ),

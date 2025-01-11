@@ -66,7 +66,6 @@ class LoginController extends GetxController {
               password: passwordSignIn.value.text.trim());
       print('Đăng nhập thành công: ${userCredentials.user?.email}');
 
-      // Redirect
       AuthenticationRepository.instance.screenRedirect();
     } catch (error) {
       FullScreenLoader.stopLoading();
@@ -119,7 +118,6 @@ class LoginController extends GetxController {
       await userController.saveUserRecord(userCredentials);
 
       FullScreenLoader.stopLoading();
-
       AuthenticationRepository.instance.screenRedirect();
     } catch (error) {
       Loaders.errorSnackBar(title: 'Lỗi', message: error.toString());

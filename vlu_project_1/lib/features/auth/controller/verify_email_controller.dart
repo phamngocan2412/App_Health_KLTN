@@ -11,15 +11,12 @@ import 'package:vlu_project_1/shared/widgets/text_string.dart';
 
 class VerifyEmailController extends GetxController {
   static VerifyEmailController get instance => Get.find();
-
-  // Send Email Verify appear & Set Timer for auto redirect
   @override
   void onInit() {
     setTimeForAutoRedirect();
     super.onInit();
   }
 
-  // Send Email Verification link
   Future<void> sendEmailVerification() async {
     try {
       final currentUser = FirebaseAuth.instance.currentUser;
@@ -42,33 +39,31 @@ class VerifyEmailController extends GetxController {
     }
   }
 
-  // Timer to automatically redirect on Email Verification
   void setTimeForAutoRedirect() {
-  Timer.periodic(const Duration(seconds: 1), (timer) async {
-    final user = FirebaseAuth.instance.currentUser;
-    if (user == null) {
-      timer.cancel(); // Hủy timer nếu không có người dùng nào đăng nhập
-      return;
-    }
+    Timer.periodic(const Duration(seconds: 1), (timer) async {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) {
+        timer.cancel(); 
+        return;
+      }
 
-    await user.reload();
-    
-    if (user.emailVerified) {
-      timer.cancel();
-      Get.off(
-        () => SuccessScreen(
-          image: 'assets/images/verify_email.png',
-          title: TText.yourAccountCreatedTitle,
-          subTitle: TText.yourAccountCreatedSubTitle,
-          onPressed: () => AuthenticationRepository.instance.screenRedirect(),
-        ),
-      );
-    }
-  });
-}
+      await user.reload();
+      
+      if (user.emailVerified) {
+        timer.cancel();
+        Get.off(
+          () => SuccessScreen(
+            image: 'assets/images/verify_email.png',
+            title: TText.yourAccountCreatedTitle,
+            subTitle: TText.yourAccountCreatedSubTitle,
+            onPressed: () => AuthenticationRepository.instance.screenRedirect(),
+          ),
+        );
+      }
+    });
+  }
 
 
-  // Manually Check if Email Verified
   checkEmailVerificationStatus() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null && currentUser.emailVerified) {

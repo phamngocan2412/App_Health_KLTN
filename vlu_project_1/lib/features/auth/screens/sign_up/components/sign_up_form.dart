@@ -13,13 +13,13 @@ class SignUpForm extends StatefulWidget {
   @override
   SignUpFormState createState() => SignUpFormState();
 }
-
 class SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(SignUpController());
     return Form(
       key: controller.signUpFormKey,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
       child: Column(
         children: [
           // First Name & Last Name Row
@@ -28,24 +28,40 @@ class SignUpFormState extends State<SignUpForm> {
               // First Name
               Expanded(
                 child: TextFormField(
-                  controller: controller.firstName,
-                  validator: (text) {
-                    return Validate.firstName(text, enableNullOrEmpty: false);
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(Iconsax.user),
-                    labelText: TText.firstName,
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 20.0),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    prefixIconConstraints: const BoxConstraints(
-                      minWidth: 70,
-                      minHeight: 60,
-                    ),
+                controller: controller.firstName,
+                validator: (text) {
+                  return Validate.firstName(text, enableNullOrEmpty: false);
+                },
+                decoration: InputDecoration(
+                  prefixIcon: const Icon(Iconsax.user),
+                  labelText: TText.firstName,
+                  contentPadding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: const BorderSide(color: Colors.black54), 
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: const BorderSide(color: Colors.black54),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: const BorderSide(color: Colors.red),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                    borderSide: const BorderSide(color: Colors.red), 
+                  ),
+                  prefixIconConstraints: const BoxConstraints(
+                    minWidth: 70,
+                    minHeight: 60,
                   ),
                 ),
+              ),
+
               ),
               const SizedBox(width: 10),
               // Last Name
@@ -61,7 +77,23 @@ class SignUpFormState extends State<SignUpForm> {
                     contentPadding: const EdgeInsets.symmetric(
                         vertical: 16.0, horizontal: 20.0),
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.black54),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.black54), 
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.red), 
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                      borderSide: const BorderSide(color: Colors.red),
                     ),
                     prefixIconConstraints: const BoxConstraints(
                       minWidth: 70,
@@ -86,7 +118,23 @@ class SignUpFormState extends State<SignUpForm> {
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.black54),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.black54), 
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.red),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.red),
               ),
               prefixIconConstraints: const BoxConstraints(
                 minWidth: 70,
@@ -108,7 +156,23 @@ class SignUpFormState extends State<SignUpForm> {
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.black54), 
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.black54), 
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.red), 
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.red), 
               ),
               prefixIconConstraints: const BoxConstraints(
                 minWidth: 70,
@@ -130,7 +194,23 @@ class SignUpFormState extends State<SignUpForm> {
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 20.0),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.black54),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.black54),
+              ),
+              errorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.red),
+              ),
+              focusedErrorBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(20.0),
+                borderSide: const BorderSide(color: Colors.red),
               ),
               prefixIconConstraints: const BoxConstraints(
                 minWidth: 70,
@@ -162,7 +242,23 @@ class SignUpFormState extends State<SignUpForm> {
                 contentPadding: const EdgeInsets.symmetric(
                     vertical: 16.0, horizontal: 20.0),
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(color: Colors.black54),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(color: Colors.black54), 
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(color: Colors.red), 
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                  borderSide: const BorderSide(color: Colors.red),
                 ),
                 prefixIconConstraints: const BoxConstraints(
                   minWidth: 70,

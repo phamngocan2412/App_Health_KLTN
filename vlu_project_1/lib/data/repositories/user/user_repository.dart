@@ -2,6 +2,7 @@
 // import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/services.dart';
@@ -11,10 +12,9 @@ import 'package:vlu_project_1/core/exceptions/exceptions.dart';
 import 'package:vlu_project_1/data/repositories/authentication/authentication_repository.dart';
 import 'package:vlu_project_1/features/auth/models/user_model.dart';
 
-
-// Repository class for user-related operations
 class UserRepository extends GetxController {
   static UserRepository get instance => Get.find();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
@@ -107,6 +107,24 @@ class UserRepository extends GetxController {
     }
   }
 
+  Future<void> changePassword(String oldPassword, String newPassword) async {
+    final User? user = _auth.currentUser;
+    final String email = user?.email ?? '';
+
+    final AuthCredential credential =
+        EmailAuthProvider.credential(email: email, password: oldPassword);
+    await user?.reauthenticateWithCredential(credential);
+
+    await user?.updatePassword(newPassword);
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    final User? user = _auth.currentUser;
+
+    if (user != null) {
+      await user.updatePassword(newPassword);
+    }
+  }
   // Upload any Image
   // Future<String> uploadImage(
   //     {required String path, required XFile image}) async {
@@ -125,4 +143,5 @@ class UserRepository extends GetxController {
   //     throw 'Có gì đó không ổn. Làm ơn thử lại';
   //   }
   // }
+  
 }

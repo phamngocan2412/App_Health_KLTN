@@ -1,15 +1,15 @@
 // ignore: depend_on_referenced_packages
 // ignore_for_file: avoid_print
+// ignore: depend_on_referenced_packages
 
 import 'package:flutter/widgets.dart';
-// ignore: depend_on_referenced_packages
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vlu_project_1/core/utils/network.dart';
 import 'package:vlu_project_1/shared/widgets/full_screen_loader.dart';
 import 'package:vlu_project_1/shared/widgets/loaders.dart';
 
-class ProfileController extends GetxController {
+class UpdateGenderController extends GetxController {
   RxString userGender = "Chưa chọn".obs;
   final GlobalKey<FormState> updateGenderFormKey = GlobalKey<FormState>();
 

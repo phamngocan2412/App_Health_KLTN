@@ -53,7 +53,6 @@ class InputField extends StatelessWidget {
   }
 }
 
-
 class InputDateFiled extends StatelessWidget {
   final String hint;
   final TextEditingController? controller;
@@ -81,7 +80,7 @@ class InputDateFiled extends StatelessWidget {
               return Validate.userName(text, enableNullOrEmpty: false);
             },
             decoration: InputDecoration(
-              suffixIcon: widget,  // Đặt icon ở bên trong TextFormField
+              suffixIcon: widget,
               hintText: text,
               labelText: hint,
               hintStyle: TextStyle(color: Colors.grey[600]),

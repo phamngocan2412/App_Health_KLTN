@@ -3,12 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../features/home/controllers/task_controller.dart';
 import '../../features/home/models/database_helper.dart';
 import '../../features/home/models/task.dart'; // Giả sử bạn có một class để quản lý SQLite
-
-
 
 class MedicineStatisticsPage extends StatefulWidget {
   const MedicineStatisticsPage({super.key});
@@ -28,7 +25,6 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
     _loadMedicineStats();
     _loadTasks();
   }
-  
 
   // Tải dữ liệu thống kê từ SharedPreferences
   _loadMedicineStats() async {
@@ -36,7 +32,7 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
     List<String>? stats = prefs.getStringList('medicineStats');
     if (stats != null && stats.isNotEmpty) {
       setState(() {
-        medicineStats = stats.map((e) => int.parse(e)).toList();
+        medicineStats = stats.map((e) => int.tryParse(e) ?? 0).toList();
       });
     } else {
       setState(() {
@@ -45,7 +41,7 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
     }
   }
 
-  _loadTasks() async {
+  Future<void> _loadTasks() async {
     var tasks = await DBHelper().query(); 
     setState(() {
       taskList = tasks.map((e) => Task.fromMap(e)).toList();
@@ -77,7 +73,7 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
   }
 
   // Hàm xóa lịch sử
-  clearHistory() async {
+  Future<void> clearHistory() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('medicineStats');
     setState(() {
@@ -149,7 +145,6 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
             ),
     );
   }
-
 
   // Hiển thị thẻ thống kê nhắc nhở
   Widget _buildReminderCard(String title, int value) {
@@ -238,19 +233,29 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
             children: [
               _buildPieChart(), 
               const SizedBox(height: 16.0),
-                _buildStatisticCard('Đã uống thuốc', medicineStats[0]),
+              _buildStatisticCard(
+                'Đã uống thuốc',
+                medicineStats[0],
+                _incrementMedicineTaken,
+                _decrementMedicineTaken,
+              ),
               const SizedBox(height: 12.0),
-                _buildStatisticCard('Chưa uống thuốc', medicineStats[1]),
+              _buildStatisticCard(
+                'Chưa uống thuốc',
+                medicineStats[1],
+                _incrementMedicineNotTaken,
+                _decrementMedicineNotTaken,
+              ),
               const SizedBox(height: 16.0),
               _buildReminderChart(),
               const SizedBox(height: 16.0),
-                _buildReminderCard('Không nhắc nhở', reminderStats[0]),
-                const SizedBox(height: 12.0),
-                _buildReminderCard('Hằng ngày', reminderStats[1]),
-                const SizedBox(height: 12.0),
-                _buildReminderCard('Hằng tuần', reminderStats[2]),
-                const SizedBox(height: 12.0),
-                _buildReminderCard('Hằng tháng', reminderStats[3]),
+              _buildReminderCard('Không nhắc nhở', reminderStats[0]),
+              const SizedBox(height: 12.0),
+              _buildReminderCard('Hằng ngày', reminderStats[1]),
+              const SizedBox(height: 12.0),
+              _buildReminderCard('Hằng tuần', reminderStats[2]),
+              const SizedBox(height: 12.0),
+              _buildReminderCard('Hằng tháng', reminderStats[3]),
               const SizedBox(height: 40.0),
             ],
           ),
@@ -260,12 +265,12 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
   }
 
   // Hiển thị thẻ thống kê
-  Widget _buildStatisticCard(String title, int value) {
+  Widget _buildStatisticCard(String title, int value, VoidCallback onIncrement, VoidCallback onDecrement) {
     return Card(
       elevation: 6,
       shadowColor: Colors.black.withOpacity(0.2),
       child: Padding(
-        padding: const EdgeInsets.all(15.0),
+        padding: const EdgeInsets.all(10.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -273,15 +278,66 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
               title,
               style: const TextStyle(fontSize: 17.0, fontWeight: FontWeight.w500),
             ),
-            Text(
-              '$value lần',
-              style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
+            Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.remove, color: Colors.red),
+                  onPressed: onDecrement,
+                ),
+                Text(
+                  '$value',
+                  style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.w400),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.add, color: Colors.green),
+                  onPressed: onIncrement,
+                ),
+              ],
             ),
           ],
         ),
       ),
     );
   }
+  void _incrementMedicineTaken() async {
+    setState(() {
+      medicineStats[0]++;
+    });
+    await _saveMedicineStats();
+  }
+
+  void _decrementMedicineTaken() async {
+    if (medicineStats[0] > 0) {
+      setState(() {
+        medicineStats[0]--;
+      });
+      await _saveMedicineStats();
+    }
+  }
+
+  void _incrementMedicineNotTaken() async {
+    setState(() {
+      medicineStats[1]++;
+    });
+    await _saveMedicineStats();
+  }
+
+  void _decrementMedicineNotTaken() async {
+    if (medicineStats[1] > 0) {
+      setState(() {
+        medicineStats[1]--;
+      });
+      await _saveMedicineStats();
+    }
+  }
+
+// Lưu trạng thái vào SharedPreferences
+Future<void> _saveMedicineStats() async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setStringList('medicineStats', medicineStats.map((e) => e.toString()).toList());
+}
+
+
 
   // Biểu đồ tròn thống kê số lần uống thuốc
   Widget _buildPieChart() {
@@ -307,7 +363,7 @@ class MedicineStatisticsPageState extends State<MedicineStatisticsPage> {
                 'Chưa uống thuốc': medicineStats[1].toDouble(),
               },
               colorList: [
-                Colors.green[400]!,
+                Colors.blue[400]!,
                 Colors.red[400]!,
               ],
               chartRadius: MediaQuery.of(context).size.width / 3,

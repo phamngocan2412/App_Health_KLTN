@@ -1,6 +1,5 @@
-import 'package:flutter/foundation.dart' show immutable;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-@immutable
 class Message {
   final String id;
   final String message;
@@ -34,6 +33,10 @@ class Message {
       createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
       isMine: map['isMine'] as bool,
     );
+  }
+
+  factory Message.fromSnapshot(DocumentSnapshot doc) {
+    return Message.fromMap(doc.data() as Map<String, dynamic>);
   }
 
   Message copyWith({

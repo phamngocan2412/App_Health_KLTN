@@ -62,12 +62,9 @@ class TText {
   static const String dateTitle = 'Ngày';
   static const String subTitle = 'Nhập dữ liệu vào đây';
   static const String startTime = 'Bắt đầu';
-  static const String remindTitle= 'Nhắc nhở';
-  static const String repeatTitle= 'Lặp lại';
-  static const String colorTitle= 'Màu sắc';
-  static const String creatTask= 'Tạo';
-  static const String ringTitle= 'Nhạc chuông';
-  
-  
-
+  static const String remindTitle = 'Nhắc nhở';
+  static const String repeatTitle = 'Lặp lại';
+  static const String colorTitle = 'Màu sắc';
+  static const String creatTask = 'Tạo';
+  static const String editTask = "Chỉnh sửa";
 }

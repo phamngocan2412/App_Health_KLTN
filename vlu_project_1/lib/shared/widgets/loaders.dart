@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -13,7 +15,7 @@ class Loaders {
         backgroundColor: Colors.transparent,
         content: GestureDetector(
           onTap: () {
-            hideSnackBar(); // Ẩn Snackbar khi nhấn vào nó
+            hideSnackBar(); 
           },
           child: Container(
             padding: const EdgeInsets.all(12.0),

@@ -70,6 +70,14 @@ dependencies:
   flutter_dotenv: ^5.2.1
   flutter_image_compress: ^2.3.0
   crystal_navigation_bar: ^1.0.2
+  lottie: ^3.2.0
+  flutter_localization: ^0.3.0
+  dcdg: ^4.1.0
+  code_uml: ^1.0.2
+  cloudinary: ^1.2.0
+
+dependency_overrides:
+  analyzer: ^6.4.1
 
 dev_dependencies:
   flutter_test:
@@ -83,10 +91,9 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/medicien/
-    - assets/sounds/
     - .env
     
 flutter_native_splash:
-  image: assets/images/splash.png
+  image: assets/images/logo_bg.png
   color: "#ffffff"
   android: true

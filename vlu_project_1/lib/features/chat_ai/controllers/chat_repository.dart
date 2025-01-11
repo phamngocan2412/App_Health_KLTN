@@ -9,18 +9,20 @@ import 'package:uuid/uuid.dart';
 import 'package:vlu_project_1/core/utils/extensions/img_extensions.dart';
 import 'package:vlu_project_1/features/chat_ai/controllers/storage_nodejs_repository.dart';
 import 'package:vlu_project_1/features/chat_ai/model/message.dart';
+import 'package:vlu_project_1/shared/widgets/loaders.dart';
 
 @immutable
 class ChatRepository {
   final _auth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
 
+  
   Future sendMessage({
     required String apiKey,
     required XFile? image,
     required String promptText,
   }) async {
-    // Define your model
+
     final textModel = GenerativeModel(model: 'gemini-pro', apiKey: apiKey);
     final imageModel = GenerativeModel(
       model: 'gemini-1.5-pro',
@@ -38,7 +40,6 @@ class ChatRepository {
     );
 
     if (image != null) {
-      // Save image to backend server and get the URL
       final downloadUrl = await StorageNodejsRepository().saveImageToStorage(
         image: image,
         messageId: sentMessageId,
@@ -62,18 +63,14 @@ class ChatRepository {
 
     try {
       if (image == null) {
-        // Make a text only request to Gemini API
         response = await textModel.generateContent([Content.text(promptText)]);
       } else {
-        // convert it to Uint8List
         final imageBytes = await image.readAsBytes();
-
-        // Define your parts
         final prompt = TextPart(promptText);
         final mimeType = image.getMimeTypeFromExtension();
         final imagePart = DataPart(mimeType, imageBytes);
 
-        // Make a multi-model request to Gemini API
+
         response = await imageModel.generateContent([
           Content.multi([
             prompt,
@@ -111,7 +108,6 @@ class ChatRepository {
     }
   }
 
-  //! Send Text Only Prompt
   Future sendTextMessage({
     required String textPrompt,
     required String apiKey,
@@ -162,9 +158,9 @@ class ChatRepository {
           .doc(receivedMessageId)
           .set(responseMessage.toMap());
     } catch (e) {
-      // Handle specific error for safety block
       if (e.toString().contains("Candidate was blocked due to safety")) {
-        throw Exception("Nội dung của bạn đã bị chặn do vấn đề an toàn. Vui lòng kiểm tra lại.");
+        Loaders.warningSnackBar(title: "Cảnh báo", message: "Nội dung không phù hợp");
+        // throw Exception("Nội dung của bạn đã bị chặn do vấn đề an toàn. Vui lòng kiểm tra lại.");
       } else {
         throw Exception("Lỗi không xác định: ${e.toString()}");
       }

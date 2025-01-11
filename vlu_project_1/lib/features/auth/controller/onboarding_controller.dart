@@ -6,19 +6,15 @@ import 'package:vlu_project_1/features/auth/screens/sign_in/sign_in_screen.dart'
 class OnboardingController extends GetxController {
   static OnboardingController get instance => Get.find();
 
-  // Variables
   final pageController = PageController();
   Rx<int> currentPageIndex = 0.obs;
-  // Update Current Index when Page Scroll
   void updatePageIndicator(index) => currentPageIndex.value = index;
 
-  // Jump to the specific dot selected page
   void dotNavigationClick(index) {
     currentPageIndex.value = index;
     pageController.jumpToPage(index);
   }
 
-  // Update Current Index & jump to next page
   void nextPage() {
     if (currentPageIndex.value == 2) {
       final storage = GetStorage();
@@ -31,7 +27,6 @@ class OnboardingController extends GetxController {
     }
   }
 
-  // Update Current Index & jump to last page
   void skipPage() {
     Get.off(() => const SignInScreen());
   }

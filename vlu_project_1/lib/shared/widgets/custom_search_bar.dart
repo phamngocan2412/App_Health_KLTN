@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class CustomSearchBar extends StatelessWidget {
   final TextEditingController searchController;
   final String hintText;
-  final Function(String) onChanged;
+  final ValueChanged<String> onChanged;
   final VoidCallback onClear;
 
   const CustomSearchBar({

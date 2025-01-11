@@ -25,19 +25,16 @@ class OnBoardingPageState extends State<OnBoardingPage>
   void initState() {
     super.initState();
 
-    // Initialize the AnimationController
     _controller = AnimationController(
       duration: const Duration(seconds: 1),
       vsync: this,
     );
 
-    // Create the Animation<double>
     _opacity = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeIn,
     ));
 
-    // Start the animation
     _controller.forward();
   }
 
@@ -60,6 +57,7 @@ class OnBoardingPageState extends State<OnBoardingPage>
               width: HelperFunctions.screenWidth() * 0.8,
               height: HelperFunctions.screenHeight() * 0.4,
               image: AssetImage(widget.image),
+              filterQuality: FilterQuality.high,
             ),
           ),
           const SizedBox(height: TSize.spaceBtwItems),

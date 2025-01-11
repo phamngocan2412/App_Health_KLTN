@@ -1,0 +1,1293 @@
+classDiagram
+class TRoutes 
+onBoard: String
+signUp: String
+login: String
+forgetPassword: String
+navigationMenu: String
+medicine: String
+profile: String
+verifyEmail: String
+home: String
+resetPassword: String
+medicineJson: String
+medicineStatisticPage: String
+
+class TAppRoute 
+pages: List<GetPage>
+
+class DefaultFirebaseOptions {
+web: FirebaseOptions
+android: FirebaseOptions
+ios: FirebaseOptions
+macos: FirebaseOptions
+windows: FirebaseOptions
+currentPlatform(): FirebaseOptions
+}
+DefaultFirebaseOptions ..> FirebaseOptions
+class StorageService {
+-instance: StorageService
+-storage: GetStorage
+init(): void
+saveData(): void
+readData(): T?
+removeData(): void
+clearAll(): void
+}
+StorageService ..> StorageService
+StorageService ..> GetStorage
+class App {
+build(): Widget
+}
+StatelessWidget <|-- App
+class AuthenticationRepository {
+-storageService: null
+-auth: null
+instance(): AuthenticationRepository
+authUser(): User?
+onReady(): void
+screenRedirect(): void
+loginWithEmailAndPassword(): UserCredential
+registerWithEmailAndPassword(): UserCredential
+sendEmailVerification(): void
+checkEmailExists(): bool
+updateUserName(): void
+sendPasswordResetEmail(): void
+reAuthenticateWithEmailAndPassword(): void
+signInWithGoogle(): UserCredential?
+signInWithFacebook(): UserCredential
+logout(): void
+deleteAccount(): void
+}
+GetxController <|-- AuthenticationRepository
+class UserRepository {
+-db: FirebaseFirestore
+instance(): UserRepository
+saveUserRecord(): void
+fetchUserDetails(): UserModel
+updateUserDetails(): void
+updateSingleField(): void
+removeUserRecord(): void
+}
+GetxController <|-- UserRepository
+UserRepository ..> FirebaseFirestore
+class PermissionManager {
+checkAndRequestCameraPermission(): void
+checkAndRequestStoragePermission(): void
+checkAndRequestNotificationPermission(): void
+}
+class AppLocalizations {
+locale: Locale
+delegate: LocalizationsDelegate<AppLocalizations>
+supportedLanguages: List<String>
+supportedLocales: List<Locale>
+of(): AppLocalizations
+load(): AppLocalizations
+calendar(): String
+month(): String
+monday(): String
+tuesday(): String
+wednesday(): String
+thursday(): String
+friday(): String
+saturday(): String
+sunday(): String
+january(): String
+february(): String
+march(): String
+april(): String
+may(): String
+june(): String
+july(): String
+august(): String
+september(): String
+october(): String
+november(): String
+december(): String
+addButtonLabel(): String
+today(): String
+save(): String
+cancel(): String
+delete(): String
+edit(): String
+error(): String
+success(): String
+noData(): String
+}
+AppLocalizations ..> Locale
+AppLocalizations ..> LocalizationsDelegate
+class _AppLocalizationsDelegate {
+isSupported(): bool
+load(): AppLocalizations
+shouldReload(): bool
+}
+LocalizationsDelegate <|-- _AppLocalizationsDelegate
+class UpdateNameController {
+firstName: null
+lastName: null
+userController: null
+userRepository: null
+updateUserNameFormKey: GlobalKey<FormState>
+instance(): UpdateNameController
+onInit(): void
+initializedName(): void
+updateUserName(): void
+}
+GetxController <|-- UpdateNameController
+UpdateNameController ..> GlobalKey
+class UpdateUserNameController {
+username: null
+userController: null
+userRepository: null
+updateUserNameFormKey: GlobalKey<FormState>
+instance(): UpdateUserNameController
+onInit(): void
+initializedUsername(): void
+updateUserName(): void
+}
+GetxController <|-- UpdateUserNameController
+UpdateUserNameController ..> GlobalKey
+class UpdatePhoneNumberController {
+phoneNumber: null
+userController: null
+userRepository: null
+updatePhoneNumberFormKey: GlobalKey<FormState>
+instance(): UpdatePhoneNumberController
+onInit(): void
+initializedPhoneNumber(): void
+updatePhoneNumber(): void
+}
+GetxController <|-- UpdatePhoneNumberController
+UpdatePhoneNumberController ..> GlobalKey
+class UpdateEmailController {
+email: null
+userController: null
+userRepository: null
+authRepository: null
+updateEmailFormKey: GlobalKey<FormState>
+instance(): UpdateEmailController
+onInit(): void
+initializedEmail(): void
+updateEmail(): void
+}
+GetxController <|-- UpdateEmailController
+UpdateEmailController ..> GlobalKey
+class ProfileController {
+userGender: RxString
+updateGenderFormKey: GlobalKey<FormState>
+onInit(): void
+updateGender(): void
+saveProfile(): void
+saveGenderToPreferences(): void
+loadGenderFromPreferences(): void
+}
+GetxController <|-- ProfileController
+ProfileController ..> RxString
+ProfileController ..> GlobalKey
+class GenderSelector {
+initialValue: String
+onValueChanged: ValueChanged<String>
+createState(): GenderSelectorState
+}
+StatefulWidget <|-- GenderSelector
+GenderSelector ..> ValueChanged
+class GenderSelectorState {
+selectedGender: String
+initState(): void
+build(): Widget
+}
+State <|-- GenderSelectorState
+class DateOfBirthSelector {
+createState(): DateOfBirthSelectorState
+}
+StatefulWidget <|-- DateOfBirthSelector
+class DateOfBirthSelectorState {
+selectedDate: DateTime
+initState(): void
+loadDateOfBirth(): void
+-_selectDate(): void
+saveDateOfBirth(): void
+build(): Widget
+}
+State <|-- DateOfBirthSelectorState
+DateOfBirthSelectorState ..> DateTime
+class ChangePhoneNumber {
+build(): Widget
+-_customColumn(): Column
+-_customAppBar(): AppBar
+}
+StatelessWidget <|-- ChangePhoneNumber
+class ReAuthenticateUserLoginForm {
+build(): Widget
+-_customColumn(): Column
+-_customAppBar(): AppBar
+}
+StatelessWidget <|-- ReAuthenticateUserLoginForm
+class ChangeUsername {
+build(): Widget
+-_customColumn(): Column
+-_customAppBar(): AppBar
+}
+StatelessWidget <|-- ChangeUsername
+class ChangeEmail {
+build(): Widget
+-_customColumn(): Column
+-_customAppBar(): AppBar
+}
+StatelessWidget <|-- ChangeEmail
+class ChangeName {
+build(): Widget
+-_customColumn(): Column
+-_customAppBar(): AppBar
+}
+StatelessWidget <|-- ChangeName
+class ProfileMenu {
+icon: IconData
+onPressed: VoidCallback
+title: String
+build(): Widget
+}
+StatelessWidget <|-- ProfileMenu
+ProfileMenu ..> IconData
+ProfileMenu ..> VoidCallback
+class GenderUpdateScreen {
+profileController: ProfileController
+build(): Widget
+}
+StatelessWidget <|-- GenderUpdateScreen
+GenderUpdateScreen ..> ProfileController
+class ProfileScreen {
+build(): Widget
+-_showLogoutConfirmation(): void
+}
+StatelessWidget <|-- ProfileScreen
+class MedicineController {
+-firestore: FirebaseFirestore
+getMedicines(): Stream<Medicine[0..*]
+searchMedicines(): Stream<Medicine[0..*]
+addOrUpdateMedicine(): void
+deleteMedicine(): void
+}
+MedicineController ..> FirebaseFirestore
+class Medicine {
+id: String
+tenThuoc: String
+benh: String
+bacSi: String
+diaDiem: String
+lieuLuong: String
+thoiGianUong: String
+congDung: String
+sdt: String
+toMap(): Map<String, dynamic
+fromMap(): Medicine
+}
+class MedicineFormDialog {
+medicine: Medicine?
+createState(): MedicineFormDialogState
+}
+StatefulWidget <|-- MedicineFormDialog
+MedicineFormDialog ..> Medicine
+class MedicineFormDialogState {
+tenThuocController: TextEditingController
+benhController: TextEditingController
+lieuLuongController: TextEditingController
+thoiGianUongController: TextEditingController
+congDungController: TextEditingController
+bacSiController: TextEditingController
+diaDiemController: TextEditingController
+sdtController: TextEditingController
+-formKey: null
+initState(): void
+dispose(): void
+-_updateMedicine(): void
+build(): Widget
+}
+State <|-- MedicineFormDialogState
+MedicineFormDialogState ..> TextEditingController
+class RecognizedTextList {
+createState(): State<RecognizedTextdynamic[0..*]
+}
+StatefulWidget <|-- RecognizedTextList
+class _RecognizedTextListState {
+-firestoreService: FirestoreService
+-selectedDate: DateTime?
+-_deleteText(): void
+build(): Widget
+-_pickDate(): void
+-_confirmDelete(): void
+-_isSameDate(): bool
+-_formatDate(): String
+}
+State <|-- _RecognizedTextListState
+_RecognizedTextListState ..> FirestoreService
+_RecognizedTextListState ..> DateTime
+class MedicineJson {
+createState(): MedicineJsonState
+}
+StatefulWidget <|-- MedicineJson
+class MedicineJsonState {
+thuocList: List<dynamic>
+tenThuocController: TextEditingController
+benhController: TextEditingController
+lieuLuongController: TextEditingController
+thoiGianUongController: TextEditingController
+congDungController: TextEditingController
+initState(): void
+loadThuocData(): void
+addThuoc(): void
+build(): Widget
+}
+State <|-- MedicineJsonState
+MedicineJsonState ..> TextEditingController
+class MedicineCard {
+medicine: Medicine
+onEdit: VoidCallback
+onDelete: VoidCallback
+build(): Widget
+}
+StatelessWidget <|-- MedicineCard
+MedicineCard ..> Medicine
+MedicineCard ..> VoidCallback
+class FirestoreService {
+-firestore: FirebaseFirestore
+-auth: FirebaseAuth
+-_currentUser(): User?
+saveRecognizedText(): void
+getRecognizedTexts(): Stream<MapString, dynamic[0..*]
+deleteRecognizedText(): void
+}
+FirestoreService ..> FirebaseFirestore
+FirestoreService ..> FirebaseAuth
+class TextRecognitionWidget {
+createState(): State<TextRecognitionWidget
+}
+StatefulWidget <|-- TextRecognitionWidget
+class _TextRecognitionWidgetState {
+textRecognizer: TextRecognizer
+imagePicker: ImagePicker
+-firestoreService: FirestoreService
+pickedImagePath: String?
+recognizedText: String
+isRecognizing: bool
+initState(): void
+-_checkCameraPermissions(): void
+-_saveTextToFirestore(): void
+-_pickImageAndProcess(): void
+-_chooseImageSourceModal(): void
+-_copyTextToClipboard(): void
+build(): Widget
+}
+State <|-- _TextRecognitionWidgetState
+_TextRecognitionWidgetState ..> TextRecognizer
+_TextRecognitionWidgetState ..> ImagePicker
+_TextRecognitionWidgetState ..> FirestoreService
+class MedicineScreen {
+createState(): MedicineScreenState
+}
+StatefulWidget <|-- MedicineScreen
+class MedicineScreenState {
+medicineController: MedicineController
+searchController: TextEditingController
+searchQuery: String
+isLoading: bool
+-tabController: TabController
+initState(): void
+dispose(): void
+build(): Widget
+-_showMedicineForm(): void
+-_showSystemMedicineList(): void
+}
+State <|-- MedicineScreenState
+MedicineScreenState ..> MedicineController
+MedicineScreenState ..> TextEditingController
+MedicineScreenState ..> TabController
+class UserModel {
+id: String
+username: String
+email: String
+firstName: String
+lastName: String
+phoneNumber: String
+profilePicture: String
+isPhoneNumberEmpty(): bool
+validatePhoneNumber(): String?
+fullName(): String
+formattedPhoneNumber(): String
+nameParts(): String[0..*]
+generateUsername(): String
+empty(): UserModel
+toJson(): Map<String, dynamic
+}
+class SuccessScreen {
+image: String
+onPressed: VoidCallback
+build(): Widget
+}
+StatelessWidget <|-- SuccessScreen
+SuccessScreen ..> VoidCallback
+class OnBoardingDotNavigation {
+build(): Widget
+}
+StatelessWidget <|-- OnBoardingDotNavigation
+class OnBoardingSkip {
+build(): Widget
+}
+StatelessWidget <|-- OnBoardingSkip
+class OnBoardingPage {
+image: String
+createState(): OnBoardingPageState
+}
+StatefulWidget <|-- OnBoardingPage
+class OnBoardingPageState {
+-controller: AnimationController
+-opacity: Animation<double>
+initState(): void
+dispose(): void
+build(): Widget
+}
+State <|-- OnBoardingPageState
+OnBoardingPageState ..> AnimationController
+OnBoardingPageState ..> Animation
+class OnBoardingNextButton {
+build(): Widget
+}
+StatelessWidget <|-- OnBoardingNextButton
+class OnboardingScreen {
+build(): Widget
+}
+StatelessWidget <|-- OnboardingScreen
+class VerifyEmailScreen {
+email: String?
+build(): Widget
+}
+StatelessWidget <|-- VerifyEmailScreen
+class ForgotPasswordScreen {
+build(): Widget
+}
+StatelessWidget <|-- ForgotPasswordScreen
+class SignForm {
+createState(): State<SignForm
+}
+StatefulWidget <|-- SignForm
+class _SignFormState {
+initState(): void
+build(): Widget
+}
+State <|-- _SignFormState
+class SignInSignUpWith {
+dividerText: String
+build(): Widget
+}
+StatelessWidget <|-- SignInSignUpWith
+class LoginSignUpWithSocial {
+build(): Widget
+}
+StatelessWidget <|-- LoginSignUpWithSocial
+class SignInScreen {
+build(): Widget
+}
+StatelessWidget <|-- SignInScreen
+class SignUpScreen {
+build(): Widget
+}
+StatelessWidget <|-- SignUpScreen
+class SignUpForm {
+createState(): SignUpFormState
+}
+StatefulWidget <|-- SignUpForm
+class SignUpFormState {
+build(): Widget
+}
+State <|-- SignUpFormState
+class ResetPasswordScreen {
+email: String
+build(): Widget
+}
+StatelessWidget <|-- ResetPasswordScreen
+class LoginController {
+hidePassword: null
+rememberMe: null
+emailSignIn: null
+passwordSignIn: null
+localStorage: null
+signInFormKey: GlobalKey<FormState>
+userController: null
+onInit(): void
+loginWithEmailAndPassword(): void
+signinWithGoogle(): void
+signinWithFacebook(): void
+}
+GetxController <|-- LoginController
+LoginController ..> GlobalKey
+class VerifyEmailController {
+instance(): VerifyEmailController
+onInit(): void
+sendEmailVerification(): void
+setTimeForAutoRedirect(): void
+checkEmailVerificationStatus(): void
+}
+GetxController <|-- VerifyEmailController
+class OnboardingController {
+pageController: null
+currentPageIndex: Rx<int>
+instance(): OnboardingController
+updatePageIndicator(): void
+dotNavigationClick(): void
+nextPage(): void
+skipPage(): void
+}
+GetxController <|-- OnboardingController
+OnboardingController ..> Rx
+class SignUpController {
+privacyPolicy: null
+hidePassword: null
+emailSignUp: null
+passwordSignUp: null
+firstName: null
+lastName: null
+userName: null
+phoneNumber: null
+signUpFormKey: GlobalKey<FormState>
+instance(): SignUpController
+signUp(): void
+}
+GetxController <|-- SignUpController
+SignUpController ..> GlobalKey
+class ForgetPasswordController {
+email: null
+forgetPasswordFormKey: GlobalKey<FormState>
+instance(): ForgetPasswordController
+sendPasswordResentEmail(): void
+resendPasswordResentEmail(): void
+}
+GetxController <|-- ForgetPasswordController
+ForgetPasswordController ..> GlobalKey
+class UserController {
+user: Rx<UserModel>
+profileLoading: null
+userRepository: null
+hidePassword: null
+verifyEmail: null
+verifyPassword: null
+reAuthFormKey: null
+instance(): UserController
+onInit(): void
+fetchUserRecord(): void
+saveUserRecord(): void
+deleteAccountWarningPopup(): void
+deleteUserAccount(): void
+reAuthenticateEmailAndPasswordUser(): void
+uploadImageToNodeServer(): String
+uploadUserProfilePicture(): void
+}
+GetxController <|-- UserController
+UserController ..> Rx
+class ChatRepository {
+-auth: null
+-firestore: null
+sendMessage(): Future
+sendTextMessage(): Future
+clearChatHistory(): void
+}
+class StorageNodejsRepository {
+serverUrl: String
+saveImageToStorage(): String
+}
+class ChatAi {
+createState(): ConsumerState<ChatAi
+}
+ConsumerStatefulWidget <|-- ChatAi
+class _ChatAiState {
+-messageController: TextEditingController
+apiKey: String
+-isFirstLaunch: bool
+-isMessageSent: bool
+-isLoading: bool
+initState(): void
+-_loadFirstLaunchStatus(): void
+-_setFirstLaunchStatus(): void
+dispose(): void
+-_handleSuggestion(): void
+build(): Widget
+-_showConfirmDeleteDialog(): bool
+sendMessage(): Future
+}
+ConsumerState <|-- _ChatAiState
+_ChatAiState ..> TextEditingController
+class SendImageScreen {
+createState(): ConsumerState<SendImageScreen
+}
+ConsumerStatefulWidget <|-- SendImageScreen
+class _SendImageScreenState {
+image: XFile?
+-promptController: TextEditingController
+isLoading: bool
+apiKey: null
+initState(): void
+dispose(): void
+-_pickImage(): void
+-_removeImage(): void
+build(): Widget
+}
+ConsumerState <|-- _SendImageScreenState
+_SendImageScreenState ..> XFile
+_SendImageScreenState ..> TextEditingController
+class SuggestionsWidget {
+onSuggestionSelected:  Function(String)
+isFirstLaunch: bool
+build(): Widget
+}
+StatelessWidget <|-- SuggestionsWidget
+class MessagesList {
+userId: String
+build(): Widget
+}
+ConsumerWidget <|-- MessagesList
+class MessageTile {
+message: Message
+isOutgoing: bool
+build(): Widget
+}
+StatelessWidget <|-- MessageTile
+MessageTile ..> Message
+class Message {
+id: String
+message: String
+imageUrl: String?
+createdAt: DateTime
+isMine: bool
+toMap(): Map<String, dynamic
+copyWith(): Message
+}
+Message ..> DateTime
+class TaskController {
+taskList: RxList
+dbHelper: DBHelper
+getTasks(): void
+getTasksByRepeat(): void
+addTask(): void
+deleteask(): void
+markTaskAsCompleted(): void
+deleteAllTask(): void
+}
+GetxController <|-- TaskController
+TaskController ..> RxList
+TaskController ..> DBHelper
+class Task {
+id: int?
+title: String?
+note: String?
+isCompleted: int?
+date: String?
+startTime: String?
+color: int?
+repeat: String?
+toMap(): Map<String, dynamic
+}
+class DBHelper {
+-db: Database?
+-version: int
+-tableName: String
+db(): Database?
+initDb(): Database?
+-_onCreate(): void
+-_onUpgrade(): void
+insert(): int
+delete(): int
+deleteAll(): int
+update(): int
+query(): MapString, Object?[0..*]
+queryByRepeat(): MapString, Object?[0..*]
+}
+DBHelper ..> Database
+class ButtonAdd {
+label: String
+onTap:  Function()?
+build(): Widget
+}
+StatelessWidget <|-- ButtonAdd
+class HeaderField {
+onTap: VoidCallback
+build(): Widget
+}
+StatelessWidget <|-- HeaderField
+HeaderField ..> VoidCallback
+class InputField {
+hint: String
+controller: TextEditingController?
+text: String?
+icon: Icon?
+build(): Widget
+}
+StatelessWidget <|-- InputField
+InputField ..> TextEditingController
+InputField ..> Icon
+class InputDateFiled {
+hint: String
+controller: TextEditingController?
+text: String?
+widget: Widget?
+build(): Widget
+}
+StatelessWidget <|-- InputDateFiled
+InputDateFiled ..> TextEditingController
+InputDateFiled ..> Widget
+class TaskTile {
+task: Task?
+build(): Widget
+-_getBGClr(): void
+}
+StatelessWidget <|-- TaskTile
+TaskTile ..> Task
+class THomeAppBar {
+build(): Widget
+preferredSize(): Size
+}
+StatelessWidget <|-- THomeAppBar
+THomeAppBar ..|> PreferredSizeWidget
+class ListCalendar {
+onDateChange: ValueChanged<DateTime>
+createState(): State<dynamic[0..*]Calendar
+}
+StatefulWidget <|-- ListCalendar
+ListCalendar ..> ValueChanged
+class _ListCalendarState {
+-focusedDay: DateTime
+-selectedDay: DateTime?
+-calendarFormat: CalendarFormat
+build(): Widget
+}
+State <|-- _ListCalendarState
+_ListCalendarState ..> DateTime
+_ListCalendarState ..> CalendarFormat
+class HomeScreen {
+createState(): State<HomeScreen
+}
+StatefulWidget <|-- HomeScreen
+class _HomePageState {
+notifyHelper: NotifyHelper
+-taskController: TaskController
+selectedDate: DateTime
+initState(): void
+-_checkFilePermissions(): void
+build(): Widget
+-_showTasks(): void
+-_noTaskMsg(): void
+-_showBottomSheet(): void
+-_bottomSheetButton(): void
+}
+State <|-- _HomePageState
+_HomePageState ..> NotifyHelper
+_HomePageState ..> TaskController
+_HomePageState ..> DateTime
+class AddTaskPage {
+createState(): State<AddTaskPage
+}
+StatefulWidget <|-- AddTaskPage
+class _AddTaskPageState {
+taskController: TaskController
+titleController: TextEditingController
+noteController: TextEditingController
+selectedDate: ValueNotifier<DateTime>
+startTime: String
+selectedRepeat: String
+repeatList: List<String>
+selectedColor: int
+dispose(): void
+initState(): void
+-_checkNotiPermissions(): void
+build(): Widget
+-_buildInputField(): Widget
+-_customAppBar(): AppBar
+-_validateDate(): void
+-_addTaskToDb(): void
+-_getDateFromUser(): void
+-_getTimeFromUser(): void
+}
+State <|-- _AddTaskPageState
+_AddTaskPageState ..> TaskController
+_AddTaskPageState ..> TextEditingController
+_AddTaskPageState ..> ValueNotifier
+class ColorPickerWidget {
+initialSelectedColor: int
+onColorSelected:  Function(int)
+createState(): ColorPickerWidgetState
+}
+StatefulWidget <|-- ColorPickerWidget
+class ColorPickerWidgetState {
+selectedColor: int
+initState(): void
+build(): Widget
+-_getColorForIndex(): Color
+}
+State <|-- ColorPickerWidgetState
+class TPlatformException {
+code: String
+message(): String
+}
+TPlatformException ..|> Exception
+class TFirebaseException {
+code: String
+message(): String
+}
+TFirebaseException ..|> Exception
+class TFormatException {
+message(): String
+}
+TFormatException ..|> Exception
+class TPlatformException {
+code: String
+message(): String
+}
+TPlatformException ..|> Exception
+class TFirebaseException {
+code: String
+getMessage(): String
+}
+TFirebaseException ..|> Exception
+class TFirebaseAuthException {
+code: String
+message(): String
+}
+TFirebaseAuthException ..|> Exception
+class SocialCard {
+icon: String?
+press: VoidCallback?
+build(): Widget
+}
+StatelessWidget <|-- SocialCard
+SocialCard ..> VoidCallback
+class DefaultButton {
+text: String
+press: VoidCallback
+build(): Widget
+}
+StatelessWidget <|-- DefaultButton
+DefaultButton ..> VoidCallback
+class RedirectToPreviousScreen {
+build(): Widget
+}
+StatelessWidget <|-- RedirectToPreviousScreen
+class TermsConditionsCheckbox {
+build(): Widget
+}
+StatelessWidget <|-- TermsConditionsCheckbox
+class Validate {
+emptyConditions: null
+isNullOrEmpty(): bool
+email(): String?
+phone(): String?
+fax(): String?
+pass(): String?
+number(): String?
+confirmPass(): String?
+firstName(): String?
+lastName(): String?
+userName(): String?
+tenThuoc(): String?
+benh(): String?
+lieuLuong(): String?
+thoiGianUong(): String?
+congDung(): String?
+bacSi(): String?
+diaDiem(): String?
+string(): String?
+isValidEmail(): bool
+isValidFax(): bool
+isValidPhone(): bool
+isValidPass(): bool
+isNumeric(): bool
+isUuid(): bool
+validateRequired(): String?
+validateRequiredCondition(): String?
+}
+class NoAccountText {
+build(): Widget
+}
+StatelessWidget <|-- NoAccountText
+class FormError {
+errors: List<String>
+build(): Widget
+formErrorText(): Row
+}
+StatelessWidget <|-- FormError
+class GeneralBindings {
+dependencies(): void
+}
+Bindings <|-- GeneralBindings
+class NotifyHelper {
+flutterNotificationService: FlutterLocalNotificationsPlugin
+selectedNotificationPayload: String?
+selectedNotificationSubject: BehaviorSubject<String>
+initializeNotification(): void
+onDidReceiveNotificationResponse(): void
+-_notificationDetails(): NotificationDetails
+-_createNotificationChannel(): void
+showNotification(): void
+showScheduleNotification(): void
+-_nextInstanceOfScheduledTime(): tz.TZDateTime
+-_configureLocalTimeZone(): void
+cancelNotififcationWithID(): void
+cancelAllNotififcation(): void
+}
+NotifyHelper ..> FlutterLocalNotificationsPlugin
+NotifyHelper ..> BehaviorSubject
+class NotificationPage {
+payload: String?
+createState(): NotificationPageState
+}
+StatefulWidget <|-- NotificationPage
+class NotificationPageState {
+isMedicineTaken: bool
+notificationTime: DateTime?
+timer: Timer?
+initState(): void
+-_startTimer(): void
+-_saveNotificationTime(): void
+-_updateMedicineStatus(): void
+-_updateStatistics(): void
+-_markMedicineAsTaken(): void
+goToStatisticsPage(): void
+dispose(): void
+build(): Widget
+-_buildNotifiedReminderCard(): Widget
+-_buildInfoRow(): Widget
+}
+State <|-- NotificationPageState
+NotificationPageState ..> DateTime
+NotificationPageState ..> Timer
+class MedicineStatisticsPage {
+createState(): MedicineStatisticsPageState
+}
+StatefulWidget <|-- MedicineStatisticsPage
+class MedicineStatisticsPageState {
+medicineStats: List<int>
+reminderStats: List<int>
+taskList: List<Task>
+initState(): void
+-_loadMedicineStats(): void
+-_loadTasks(): void
+-_showDeleteConfirmation(): void
+clearHistory(): void
+-_updateReminderStats(): void
+-_buildReminderChart(): Widget
+-_buildReminderCard(): Widget
+build(): Widget
+-_buildStatisticCard(): Widget
+-_buildPieChart(): Widget
+}
+State <|-- MedicineStatisticsPageState
+class NetworkManager {
+-connectivity: Connectivity
+-connectivitySubscription: StreamSubscription<List<ConnectivityResult>>
+-connectionStatus: Rx<ConnectivityResult>
+instance(): NetworkManager
+onInit(): void
+-_updateConnectionStatus(): void
+-_hideNoConnectionSnackBar(): void
+isConnected(): bool
+onClose(): void
+}
+GetxController <|-- NetworkManager
+NetworkManager ..> Connectivity
+NetworkManager ..> Rx
+class TLoggerHelper {
+-logger: Logger
+debug(): void
+info(): void
+warning(): void
+error(): void
+}
+TLoggerHelper ..> Logger
+class _Icon 
+-p: null
+avatar: null
+information: null
+trashCan: null
+warningCircle: null
+complete: null
+error: null
+logout: null
+eye: null
+eyeClose: null
+notification: null
+home: null
+homeActive: null
+profile: null
+profileActive: null
+employee: null
+search: null
+email: null
+
+class _Image 
+-path: null
+background: null
+fb: null
+google: null
+forgot: null
+avatar: null
+reset: null
+signUp: null
+userprofile: null
+verifyemail: null
+logo: null
+loginBg: null
+check: null
+new: null
+ob1: null
+ob2: null
+ob3: null
+
+class Assets 
+img: null
+ic: null
+
+class AppTextStyles 
+heading1: TextStyle
+heading2: TextStyle
+dateText: TextStyle
+dayText: TextStyle
+monthText: TextStyle
+inputText: TextStyle
+
+AppTextStyles ..> TextStyle
+class TimeUtils {
+secondsToMinutes(): double
+secondsToHours(): double
+tryParseTime(): TimeOfDay?
+daysOfMonths(): int
+}
+class CustomSuffixIcon {
+svgIcon: String
+onPressed: VoidCallback
+build(): Widget
+}
+StatelessWidget <|-- CustomSuffixIcon
+CustomSuffixIcon ..> VoidCallback
+class PasswordVisibilityIcon {
+onToggle: VoidCallback
+createState(): PasswordVisibilityIconState
+}
+StatefulWidget <|-- PasswordVisibilityIcon
+PasswordVisibilityIcon ..> VoidCallback
+class PasswordVisibilityIconState {
+-isObscured: bool
+build(): Widget
+}
+State <|-- PasswordVisibilityIconState
+class HelperFunctions {
+getColor(): Color?
+showSnackBar(): void
+showAlert(): void
+navigateToScreen(): void
+truncateText(): String
+screenSize(): Size
+screenWidth(): double
+screenHeight(): double
+getFormattedDate(): String
+}
+class TSize 
+xs: double
+sm: double
+md: double
+lg: double
+xl: double
+iconXs: double
+iconSm: double
+iconMd: double
+iconLg: double
+fontSizeSm: double
+fontSizeMd: double
+fontSizeLg: double
+buttonHeight: double
+buttonRadius: double
+buttonWidth: double
+buttonElevation: double
+appBarHeight: double
+imageThumbSize: double
+defaultSpace: double
+spaceBtwItems: double
+spaceBtwSections: double
+spaceFormField: double
+borderRadiusSm: double
+borderRadiusMd: double
+borderRadiusLg: double
+dividerHeight: double
+productImageSize: double
+productImageRadius: double
+productItemHeight: double
+inputFieldRadius: double
+spaceBtwInputField: double
+cardRadiusLg: double
+cardRadiusMd: double
+cardRadiusSm: double
+cardRadiusXs: double
+cardElevation: double
+imageCarouselHeight: double
+loadingIndicatorSize: double
+gridViewSpacing: double
+
+class TCircularImage {
+fit: BoxFit?
+image: String
+isNetWorkImage: bool
+overlayColor: Color?
+backgroundColor: Color
+width: double
+borderColor: Color
+iconPlaceholder: IconData
+build(): Widget
+}
+StatelessWidget <|-- TCircularImage
+TCircularImage ..> BoxFit
+TCircularImage ..> Color
+TCircularImage ..> IconData
+class ImagePreview {
+imagePath: String?
+build(): Widget
+}
+StatelessWidget <|-- ImagePreview
+class SizeConfig {
+-mediaQueryData: MediaQueryData
+screenWidth: double
+screenHeight: double
+defaultSize: double
+orientation: Orientation
+init(): void
+}
+SizeConfig ..> MediaQueryData
+SizeConfig ..> Orientation
+class CustomSearchBar {
+searchController: TextEditingController
+hintText: String
+onChanged: ValueChanged<String>
+onClear: VoidCallback
+build(): Widget
+}
+StatelessWidget <|-- CustomSearchBar
+CustomSearchBar ..> TextEditingController
+CustomSearchBar ..> ValueChanged
+CustomSearchBar ..> VoidCallback
+class TImage 
+image1: String
+image2: String
+image3: String
+
+class AppBarCustom2 {
+title: Text
+build(): Widget
+}
+StatelessWidget <|-- AppBarCustom2
+AppBarCustom2 ..> Text
+class AnimationLoaderWidget {
+text: String
+animation: String
+showAction: bool
+onActionPressed: VoidCallback?
+actionText: String?
+build(): Widget
+}
+StatelessWidget <|-- AnimationLoaderWidget
+AnimationLoaderWidget ..> VoidCallback
+class SpacingColumn 
+
+Column <|-- SpacingColumn
+class TSectionHeading {
+textColor: Color?
+showActionButton: bool
+title: String
+onPressed: void Function()?
+build(): Widget
+}
+StatelessWidget <|-- TSectionHeading
+TSectionHeading ..> Color
+class FullScreenLoader {
+openLoadingDialog(): void
+stopLoading(): void
+}
+class TText 
+title1: String
+title2: String
+title3: String
+homeAppBarTitle: String
+subtitle1: String
+subtitle2: String
+subtitle3: String
+tcontinue: String
+and: String
+done: String
+submit: String
+firstName: String
+lastName: String
+email: String
+password: String
+newPassword: String
+userName: String
+phoneNumber: String
+rememberMe: String
+forgetPassword: String
+signIn: String
+createAccount: String
+orSignInWith: String
+orSignUpWith: String
+iArgreeTo: String
+privacyPolicy: String
+termsOfUse: String
+verificationCode: String
+resendEmail: String
+resendEmailIn: String
+loginTitle: String
+loginSubTitle: String
+signupTitle: String
+forgetPasswordTitle: String
+forgetPasswordSubTitle: String
+changeYourPasswordTitle: String
+changeYourPasswordSubTitle: String
+confirmEmail: String
+confirmEmailSubTitle: String
+yourAccountCreatedTitle: String
+yourAccountCreatedSubTitle: String
+formTitle: String
+noteTitle: String
+dateTitle: String
+subTitle: String
+startTime: String
+remindTitle: String
+repeatTitle: String
+colorTitle: String
+creatTask: String
+ringTitle: String
+
+class Loaders {
+hideSnackBar(): void
+customToast(): void
+successSnackBar(): void
+warningSnackBar(): void
+errorSnackBar(): void
+}
+class TShimmer {
+width: double
+color: Color?
+build(): Widget
+}
+StatelessWidget <|-- TShimmer
+TShimmer ..> Color
+class NavigationMenu {
+createState(): NavigationMenuState
+}
+StatefulWidget <|-- NavigationMenu
+class NavigationMenuState {
+build(): Widget
+}
+State <|-- NavigationMenuState
+class NavigationController 
+selectedIndex: Rx<int>
+screens: null
+
+GetxController <|-- NavigationController
+NavigationController ..> Rx
+class TSpacingStyle 
+paddingWithAppBarHeight: EdgeInsetsGeometry
+
+TSpacingStyle ..> EdgeInsetsGeometry

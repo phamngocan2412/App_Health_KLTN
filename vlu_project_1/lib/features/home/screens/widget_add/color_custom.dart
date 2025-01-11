@@ -29,14 +29,14 @@ class ColorPickerWidgetState extends State<ColorPickerWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          "Chọn màu sắc", // Thay đổi TText.colorTitle nếu cần
+          "Chọn màu sắc", 
           style: TextStyle(
             color: Colors.black54,
             fontSize: 16,
             fontWeight: FontWeight.w400,
           ),
         ),
-        const SizedBox(height: 16), // Thay đổi TSize.spaceFormField nếu cần
+        const SizedBox(height: 16), 
         Wrap(
           children: List<Widget>.generate(5, (int index) {
             return GestureDetector(

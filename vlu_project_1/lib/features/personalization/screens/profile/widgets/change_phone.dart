@@ -1,7 +1,7 @@
+// ignore: depend_on_referenced_packages
 import 'package:flutter/material.dart';
 import 'package:vlu_project_1/core/validate.dart';
 import 'package:vlu_project_1/features/personalization/controllers/update_phone_controller.dart';
-// ignore: depend_on_referenced_packages
 import 'package:get/get.dart';
 import 'package:vlu_project_1/shared/size.dart';
 

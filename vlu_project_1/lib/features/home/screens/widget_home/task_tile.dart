@@ -1,6 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:vlu_project_1/features/home/models/task.dart';
+import 'package:vlu_project_1/features/home/screens/add_task_bar.dart';
 import 'package:vlu_project_1/shared/size_config.dart';
 
 class TaskTile extends StatelessWidget {
@@ -10,12 +15,12 @@ class TaskTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Kiểm tra task trước khi xây dựng giao diện
     if (task == null) {
-      return Container(); // Trả về container rỗng nếu task là null
+      return Container();
     }
 
     return Container(
+      color: Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 20),
       width: MediaQuery.of(context).size.width,
       margin: const EdgeInsets.only(bottom: 12),
@@ -78,17 +83,11 @@ class TaskTile extends StatelessWidget {
                   width: 0.5,
                   color: Colors.grey[200]!.withOpacity(0.7),
                 ),
-                RotatedBox(
-                  quarterTurns: 3,
-                  child: Text(
-                    task?.isCompleted == 1 ? "COMPLETED" : "TODO",
-                    style: GoogleFonts.lato(
-                      textStyle: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.edit, color: Colors.white),
+                  onPressed: () {
+                    Get.to(() => AddTaskPage(task: task));
+                  },
                 ),
               ],
             ),       

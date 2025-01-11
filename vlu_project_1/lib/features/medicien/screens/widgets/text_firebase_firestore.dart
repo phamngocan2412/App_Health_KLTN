@@ -6,8 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 class FirestoreService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  /// Lấy user hiện tại
   User? get _currentUser => _auth.currentUser;
 
   /// Lưu văn bản nhận dạng vào Firestore
@@ -26,7 +24,7 @@ class FirestoreService {
       });
     } catch (e) {
       print("Lỗi khi lưu văn bản: $e");
-      rethrow; // Ném lại lỗi để xử lý ở cấp cao hơn nếu cần
+      rethrow; 
     }
   }
 
@@ -56,5 +54,8 @@ class FirestoreService {
       }
       rethrow;
     }
+  }
+  Future<void> deleteRecognizedText(String documentId) async {
+    await _firestore.collection('recognized_texts').doc(documentId).delete();
   }
 }

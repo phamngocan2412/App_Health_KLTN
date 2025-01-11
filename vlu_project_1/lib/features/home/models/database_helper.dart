@@ -1,10 +1,7 @@
 // ignore_for_file: no_leading_underscores_for_local_identifiers, avoid_print
 
 import 'dart:async';
-
 import 'package:sqflite/sqflite.dart';
-
-
 import '../models/task.dart';
 
 class DBHelper {
@@ -42,6 +39,7 @@ class DBHelper {
   _onUpgrade(Database db, int oldversion, int newversion) {
     print('----Cập nhật----');
   }
+  
 
   Future<int> insert(Task? task) async {
     Database? mydb = await db;
@@ -63,16 +61,35 @@ class DBHelper {
     return await mydb!.delete(_tableName);
   }
 
-  Future<int> update(int id) async {
-    Database? mydb = await db;
-    print('----Update----');
-    return await mydb!.rawUpdate(
-        'UPDATE $_tableName SET isCompleted = ? WHERE id = ?', [1, id]);
-  }
+
 
   Future<List<Map<String, Object?>>> query() async {
     Database? mydb = await db;
     print('----Query----');
     return await mydb!.query(_tableName);
+  }
+
+  Future<int> update(Task task) async {
+    Database? mydb = await db;
+    print('----Update----');
+    
+    return await mydb!.update(
+      _tableName,
+      task.toMap(), 
+      where: 'id = ?', 
+      whereArgs: [task.id], 
+    );
+  }
+
+
+
+  Future<List<Map<String, Object?>>> queryByRepeat(String repeat) async {
+    Database? mydb = await db;
+    print('----Query by Repeat----');
+    return await mydb!.query(
+      _tableName,
+      where: 'repeat = ?',
+      whereArgs: [repeat],
+    );
   }
 }
